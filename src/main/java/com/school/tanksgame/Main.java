@@ -9,16 +9,16 @@ public class Main extends PApplet {
 
     @Override
     public void settings() {
-        super.settings();
+        size(500, 500);
     }
 
     @Override
     public void setup() {
-        super.setup();
+
     }
 
     @Override
     public void draw() {
-        super.draw();
+        rect(width/2, height/2, 50,50);
     }
 }
