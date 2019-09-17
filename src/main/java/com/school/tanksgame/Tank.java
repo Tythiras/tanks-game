@@ -62,7 +62,6 @@ public class Tank {
             dirVec.mult(-1);
             newLoc.add(dirVec);
         }
-        p.println(newLoc);
         if(newLoc.x < p.width && newLoc.x > 0 && newLoc.y < p.height && newLoc.y > 0 ) {
             location = newLoc;
         }

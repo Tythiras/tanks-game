@@ -35,15 +35,49 @@ public class Main extends PApplet {
     @Override
     public void draw() {
         clear();
+        for(Tank tank : tanks) {
+            tank.update();
+            tank.draw();
+        }
 
     }
 
     @Override
     public void keyPressed() {
+        for(Tank tank : tanks) {
+            for (Map.Entry<Controls, Integer>  control : tank.controlsMap.entrySet()) {
+                if(control.getValue()==keyCode) {
+                    if(control.getKey()==Controls.rotateUp) {
+                        tank.isRotatingUp = true;
+                    } else if(control.getKey()==Controls.rotateDown) {
+                        tank.isRotatingDown = true;
+                    } else if(control.getKey()==Controls.drivingForward) {
+                        tank.isDrivingForward = true;
+                    } else if(control.getKey()==Controls.drivingBackwards) {
+                        tank.isDrivingBackwards = true;
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public void keyReleased() {
+        for(Tank tank : tanks) {
+            for (Map.Entry<Controls, Integer>  control : tank.controlsMap.entrySet()) {
+                if(control.getValue()==keyCode) {
+                    if(control.getKey()==Controls.rotateUp) {
+                        tank.isRotatingUp = false;
+                    } else if(control.getKey()==Controls.rotateDown) {
+                        tank.isRotatingDown = false;
+                    } else if(control.getKey()==Controls.drivingForward) {
+                        tank.isDrivingForward = false;
+                    } else if(control.getKey()==Controls.drivingBackwards) {
+                        tank.isDrivingBackwards = false;
+                    }
+                }
+            }
+        }
     }
 
 }
