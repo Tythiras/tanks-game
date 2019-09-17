@@ -10,6 +10,7 @@ import java.util.Map;
 
 public class Main extends PApplet {
     private ArrayList<Tank> tanks = new ArrayList<>();
+    Level currLevel;
 
     @Override
     public void settings() {
@@ -18,6 +19,9 @@ public class Main extends PApplet {
 
     @Override
     public void setup() {
+        currLevel = new Level(this);
+        currLevel.generateLevel(5);
+
         Map<Integer, Controls> controlsMap = new HashMap<>();
         controlsMap.put(39, Controls.ROTATE_UP);
         controlsMap.put(37, Controls.ROTATE_DOWN);
@@ -32,6 +36,9 @@ public class Main extends PApplet {
     @Override
     public void draw() {
         clear();
+
+        currLevel.draw();
+
         for(Tank tank : tanks) {
             tank.update();
             tank.draw();
