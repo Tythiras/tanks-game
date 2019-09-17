@@ -1,8 +1,8 @@
 package com.school.tanksgame;
 
 public enum Controls {
-    rotateDown,
-    rotateUp,
-    drivingForward,
-    drivingBackwards
+    ROTATE_DOWN,
+    ROTATE_UP,
+    DRIVING_FORWARD,
+    DRIVING_BACKWARDS
 }

@@ -3,48 +3,69 @@ package com.school.tanksgame;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;
+import processing.event.KeyEvent;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class Tank {
-    PApplet p;
 
-    Map<Controls, Integer> controlsMap = new HashMap<>();
+    Map<Integer, Controls> controls;
 
+    private PApplet p;
+    private PVector location;
+    private float rotation;
 
-    PVector location;
-    float rotation;
-    float drivingVelocity = 3;
-    float rotationVelocity = (float) 0.05;
+    private boolean rotatingUp;
+    private boolean rotatingDown;
+    private boolean drivingForwards;
+    private boolean drivingBackwards;
 
-    boolean isRotatingUp = false;
-    boolean isRotatingDown = false;
-    boolean isDrivingForward = false;
-    boolean isDrivingBackwards = false;
-
-    float width = 50;
-    float height = 20;
-
-    public Tank(PApplet parent, PVector location, Map<Controls, Integer> controlsMap) {
-        p = parent;
-
-        this.controlsMap = controlsMap;
-
+    public Tank(PApplet parent, PVector location, Map<Integer, Controls> controls) {
+        this.p = parent;
+        this.controls = controls;
         this.location = location;
-        rotation = 0;
+
+        this.rotation = 0;
+        this.rotatingUp = false;
+        this.rotatingDown = false;
+        this.drivingForwards = false;
+        this.drivingBackwards = false;
+    }
+
+    public void keyAction(KeyEvent event) {
+       Controls control = controls.get(event.getKeyCode());
+       int keyAction = event.getAction();
+
+       if (control == null)
+           return;
+
+       switch (control) {
+           // keyAction == 1 means that it's keyPressed, otherwise keyReleased
+           case ROTATE_UP:
+               rotatingUp = keyAction == 1;
+               break;
+           case ROTATE_DOWN:
+               rotatingDown = keyAction == 1;
+               break;
+           case DRIVING_FORWARD:
+               drivingForwards = keyAction == 1;
+               break;
+           case DRIVING_BACKWARDS:
+               drivingBackwards = keyAction == 1;
+               break;
+       }
     }
 
     void update() {
         //update rotation
-        if (isRotatingUp) {
-            rotation += rotationVelocity;
+        if (rotatingUp) {
+            rotation += Constants.TANK_ROTATIONAL_VEL;
             if (rotation > 2*Math.PI) {
                 rotation = 0;
             }
         }
-        if (isRotatingDown) {
-            rotation -= rotationVelocity;
+        else if (rotatingDown) {
+            rotation -= Constants.TANK_ROTATIONAL_VEL;
             if (rotation < 0) {
                 rotation = (float) (2*Math.PI);
             }
@@ -53,12 +74,12 @@ public class Tank {
         //update location and make sure it isn't over the window boundaries
         PVector newLoc = new PVector(location.x, location.y);
         PVector dirVec = PVector.fromAngle(rotation);
-        dirVec.setMag(drivingVelocity);
+        dirVec.setMag(Constants.TANK_DRIVING_VEL);
 
-        if (isDrivingForward) {
+        if (drivingForwards) {
             newLoc.add(dirVec);
         }
-        if (isDrivingBackwards) {
+        if (drivingBackwards) {
             dirVec.mult(-1);
             newLoc.add(dirVec);
         }
@@ -74,12 +95,12 @@ public class Tank {
 
         p.rectMode(PConstants.CENTER);
         //main body
-        p.rect(0, 0, width, height);
+        p.rect(0, 0, Constants.TANK_WIDTH, Constants.TANK_HEIGHT);
 
         //cannon shaft
-        float shaftWidth = (float) (width / 1.25);
-        float shaftHeight = height / 5;
-        p.rect(shaftWidth / 2 + width / 2, 0, shaftWidth, shaftHeight);
+        float shaftWidth = (float) (Constants.TANK_WIDTH / 1.25);
+        float shaftHeight = Constants.TANK_HEIGHT / 5;
+        p.rect(shaftWidth / 2 + Constants.TANK_WIDTH / 2, 0, shaftWidth, shaftHeight);
 
 
         p.popMatrix();
