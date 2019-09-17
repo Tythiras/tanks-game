@@ -43,7 +43,13 @@ public class Wall {
         } else {
             return false;
         }
+    }
 
+    float distanceToPoint(PVector point) {
+        float a = this.getA();
+        float b = this.getB();
+        float dist = (float) (Math.abs(a * point.x + b - point.y) / Math.sqrt(Math.pow(a, 2)+1));
+        return dist;
     }
 
     void draw() {

@@ -20,7 +20,7 @@ public class Main extends PApplet {
     @Override
     public void setup() {
         currLevel = new Level(this);
-        currLevel.generateLevel(5);
+        currLevel.generateLevel(5, 5);
 
         Map<Integer, Controls> controlsMap = new HashMap<>();
         controlsMap.put(39, Controls.ROTATE_UP);
