@@ -48,6 +48,7 @@ public class Level {
                 float dist = wall.distanceToPoint(loc);
                 if(dist < paddingHealthPads) {
                     isAllowed = false;
+                    break;
                 }
             }
             if(isAllowed) {
