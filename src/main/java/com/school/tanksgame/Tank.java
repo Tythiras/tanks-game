@@ -4,8 +4,14 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PVector;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Tank {
     PApplet p;
+
+    Map<Controls, Integer> controlsMap = new HashMap<>();
+
 
     PVector location;
     float rotation;
@@ -20,8 +26,10 @@ public class Tank {
     float width = 50;
     float height = 20;
 
-    public Tank(PApplet parent, PVector location) {
+    public Tank(PApplet parent, PVector location, Map<Controls, Integer> controlsMap) {
         p = parent;
+
+        this.controlsMap = controlsMap;
 
         this.location = location;
         rotation = 0;
