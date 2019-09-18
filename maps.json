@@ -3,12 +3,12 @@
     "name": "level_1",
     "walls": [
       {
-        "coords": [100, 200, 500, 400],
-        "width": 20
+        "coords": [100, 500, 900, 500],
+        "width": 10
       },
       {
-        "coords": [400, 300, 100, 200],
-        "width": 20
+        "coords": [500, 100, 500, 900],
+        "width": 10
       }
     ],
     "health_pads" : [
