@@ -1,9 +1,8 @@
 package com.school.tanksgame.sprites;
 
 import com.school.tanksgame.Constants;
+import processing.core.PConstants;
 import processing.core.PVector;
-
-import static processing.core.PConstants.CENTER;
 
 public class Wall extends Sprite {
 
@@ -61,8 +60,8 @@ public class Wall extends Sprite {
 
     public void draw() {
         parent.strokeWeight(width);
+        parent.strokeCap(PConstants.SQUARE);
         parent.stroke(0);
         parent.line(startLoc.x, startLoc.y, endLoc.x, endLoc.y);
     }
-
 }
