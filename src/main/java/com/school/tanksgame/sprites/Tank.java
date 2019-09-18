@@ -82,7 +82,6 @@ public class Tank extends Sprite {
     }
 
     public void update() {
-        health -= 0.1;
         //update rotation
         if (rotatingUp) {
             rotation += Constants.TANK_ROTATIONAL_VEL;
@@ -133,6 +132,7 @@ public class Tank extends Sprite {
 
     public void draw() {
         if(health>0) {
+            parent.strokeWeight(0);
             parent.pushMatrix();
             parent.translate(location.x, location.y);
 
