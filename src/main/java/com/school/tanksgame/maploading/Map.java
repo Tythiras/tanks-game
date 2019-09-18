@@ -3,6 +3,7 @@ package com.school.tanksgame.maploading;
 import com.school.tanksgame.sprites.HealthPad;
 import com.school.tanksgame.sprites.Sprite;
 import com.school.tanksgame.sprites.Wall;
+import processing.core.PApplet;
 
 import java.util.ArrayList;
 
@@ -15,6 +16,21 @@ public class Map extends Sprite {
         this.name = name;
         this.walls = new ArrayList<>();
         this.healthPads = new ArrayList<>();
+    }
+
+    @Override
+    public void setParent(PApplet parent) {
+        super.setParent(parent);
+        setParentForSprites();
+    }
+
+    private void setParentForSprites() {
+        for (Wall wall : walls) {
+            wall.setParent(parent);
+        }
+        for (HealthPad healthPad : healthPads) {
+            healthPad.setParent(parent);
+        }
     }
 
     public void setWalls(ArrayList<Wall> walls) {

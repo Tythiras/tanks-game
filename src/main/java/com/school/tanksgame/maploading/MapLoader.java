@@ -6,20 +6,22 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import processing.core.PApplet;
 import processing.core.PVector;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MapLoader {
     private String loadFilePath;
-    private HashMap<String, Map> maps;
+    private ArrayList<Map> maps;
+    private PApplet parent;
 
-    public MapLoader(String loadFilePath) {
+    public MapLoader(String loadFilePath, PApplet parent) {
         this.loadFilePath = loadFilePath;
-        this.maps = new HashMap<>();
+        this.parent = parent;
+        this.maps = new ArrayList<>();
     }
 
     public void load() {
@@ -31,10 +33,13 @@ public class MapLoader {
                 ArrayList<HealthPad> healthPads = getHealthPadsFromArray((JSONArray) jsonObject.get("health_pads"));
 
                 String name = (String) jsonObject.get("name");
+
                 Map map = new Map(name);
                 map.setWalls(walls);
                 map.setHealthPads(healthPads);
-                maps.put(name, map);
+                map.setParent(parent);
+
+                maps.add(map);
             }
         } catch (ParseException | IOException e) {
             e.printStackTrace();
@@ -82,7 +87,7 @@ public class MapLoader {
         return healthPads;
     }
 
-//    Map getMap(String name) {
-//
-//    }
+    public Map getMap(int index) {
+        return maps.get(index);
+    }
 }
