@@ -8,11 +8,10 @@ import processing.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class Tank {
+public class Tank extends Sprite {
     Map<Integer, Controls> controls;
     ArrayList<Bullet> bullets;
 
-    private PApplet p;
     private PVector location;
     private float rotation;
 
@@ -23,8 +22,7 @@ public class Tank {
     private boolean drivingForwards;
     private boolean drivingBackwards;
 
-    public Tank(PApplet parent, PVector location, Map<Integer, Controls> controls) {
-        this.p = parent;
+    public Tank(PVector location, Map<Integer, Controls> controls) {
         this.controls = controls;
         this.location = location;
 
@@ -43,7 +41,9 @@ public class Tank {
         PVector dirVec = PVector.fromAngle(this.rotation);
         PVector startLoc = this.location.copy().add(dirVec.setMag((Constants.TANK_HEIGHT / 2) +Constants.TANK_SHAFT_HEIGHT));
 
-        bullets.add(new Bullet(p, startLoc, this.rotation));
+        Bullet bullet = new Bullet(startLoc, this.rotation);
+        bullet.setParent(parent);
+        bullets.add(bullet);
     }
 
     public void keyAction(KeyEvent event) {
@@ -100,14 +100,13 @@ public class Tank {
             dirVec.mult(-1);
             newLoc.add(dirVec);
         }
-        if(newLoc.x < p.width && newLoc.x > 0 && newLoc.y < p.height && newLoc.y > 0 ) {
+        if(newLoc.x < parent.width && newLoc.x > 0 && newLoc.y < parent.height && newLoc.y > 0 ) {
             location = newLoc;
         }
 
         //shoot if button is pressed
         if(shoot) {
             this.shoot();
-
             //no machine guns here
             shoot = false;
         }
@@ -123,21 +122,21 @@ public class Tank {
         }
     }
 
-    void draw() {
-        p.pushMatrix();
-        p.translate(location.x, location.y);
-        p.rotate(rotation);
+    public void draw() {
+        parent.pushMatrix();
+        parent.translate(location.x, location.y);
+        parent.rotate(rotation);
 
-        p.rectMode(PConstants.CENTER);
+        parent.rectMode(PConstants.CENTER);
         //main body
-        p.rect(0, 0, Constants.TANK_WIDTH, Constants.TANK_HEIGHT);
+        parent.rect(0, 0, Constants.TANK_WIDTH, Constants.TANK_HEIGHT);
 
         //cannon shaft
         float shaftWidth = Constants.TANK_SHAFT_WIDTH;
         float shaftHeight = Constants.TANK_SHAFT_HEIGHT;
-        p.rect(shaftHeight / 2 + Constants.TANK_WIDTH / 2, 0, shaftHeight, shaftWidth);
+        parent.rect(shaftHeight / 2 + Constants.TANK_WIDTH / 2, 0, shaftHeight, shaftWidth);
 
-        p.popMatrix();
+        parent.popMatrix();
 
         //draw bullets
         for(Bullet bullet : bullets) {

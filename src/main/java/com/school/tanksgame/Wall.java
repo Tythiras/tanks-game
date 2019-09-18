@@ -4,16 +4,13 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 import static processing.core.PConstants.CENTER;
-import static processing.core.PConstants.CORNER;
 
-public class Wall {
-    PApplet p;
+public class Wall extends Sprite{
 
-    PVector startLoc;
-    PVector endLoc;
-    float width = 5;
-    Wall(PApplet parent, PVector startLoc, PVector endLoc) {
-        p = parent;
+    private PVector startLoc;
+    private PVector endLoc;
+
+    public Wall(PVector startLoc, PVector endLoc) {
         this.startLoc = startLoc;
         this.endLoc = endLoc;
     }
@@ -21,9 +18,11 @@ public class Wall {
     float getA() {
         return (this.startLoc.y - this.endLoc.y) / (this.startLoc.x - this.endLoc.x);
     }
+
     float getB() {
         return (-this.getA() * this.startLoc.x + this.startLoc.y);
     }
+
     boolean isCrossingOther(Wall other) {
         float a1 = this.getA();
         float b1 = this.getB();
@@ -52,19 +51,19 @@ public class Wall {
         return dist;
     }
 
-    void draw() {
-        p.pushMatrix();
+    public void draw() {
+        parent.pushMatrix();
         float distX = startLoc.x - endLoc.x;
         float distY = startLoc.y - endLoc.y;
         float length = (float) Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
         float angle = (float) Math.atan(distY /  distX);
 
-        p.translate(startLoc.x, startLoc.y);
-        p.rotate(angle);
-        p.rectMode(CENTER);
-        p.rect(length/2, 0, length, width);
+        parent.translate(startLoc.x, startLoc.y);
+        parent.rotate(angle);
+        parent.rectMode(CENTER);
+        parent.rect(length/2, 0, length, 5);
 
-        p.popMatrix();
+        parent.popMatrix();
     }
 
 }

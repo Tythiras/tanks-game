@@ -3,17 +3,14 @@ package com.school.tanksgame;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class HealthPad {
-    PApplet p;
-
+public class HealthPad extends Sprite {
     PVector location;
 
-    HealthPad(PApplet parent, PVector location) {
-        p = parent;
+    HealthPad(PVector location) {
         this.location = location;
     }
 
-    void draw() {
-        p.ellipse(location.x, location.y, 20, 20);
+    public void draw() {
+        parent.ellipse(location.x, location.y, 20, 20);
     }
 }

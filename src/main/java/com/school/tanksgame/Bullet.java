@@ -3,9 +3,7 @@ package com.school.tanksgame;
 import processing.core.PApplet;
 import processing.core.PVector;
 
-public class Bullet {
-    PApplet p;
-
+public class Bullet extends Sprite {
     PVector location;
     PVector velocity;
     float force = 20;
@@ -13,9 +11,7 @@ public class Bullet {
     float radius = 5;
     float health = 5;
 
-    public Bullet(PApplet parent, PVector location, float rotation) {
-        p = parent;
-
+    public Bullet(PVector location, float rotation) {
         this.location = location;
         PVector dirVec = PVector.fromAngle(rotation);
         velocity = dirVec.mult(force);
@@ -30,8 +26,8 @@ public class Bullet {
             velocity.x *= -1;
 
             health--;
-        } else if (location.x + radius > p.width) {
-            location.x = p.width- radius;
+        } else if (location.x + radius > parent.width) {
+            location.x = parent.width- radius;
             velocity.x *= -1;
             health--;
         }
@@ -40,16 +36,16 @@ public class Bullet {
             location.y = radius;
             velocity.y *= -1;
             health--;
-        } else if (location.y + radius > p.height) {
-            location.y = p.height - radius;
+        } else if (location.y + radius > parent.height) {
+            location.y = parent.height - radius;
             velocity.y *= -1;
             health--;
         }
     }
 
-    void draw() {
+    public void draw() {
         if(isAlive()) {
-            p.ellipse(location.x, location.y, radius*2, radius*2);
+            parent.ellipse(location.x, location.y, radius*2, radius*2);
         }
     }
     boolean isAlive() {

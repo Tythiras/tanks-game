@@ -30,7 +30,8 @@ public class Main extends PApplet {
         controlsMap.put(38, Controls.DRIVING_FORWARD);
         controlsMap.put(40, Controls.DRIVING_BACKWARDS);
 
-        Tank newTank = new Tank(this, new PVector(width/2f, height/2f), controlsMap);
+        Tank newTank = new Tank(new PVector(width/2f, height/2f), controlsMap);
+        newTank.setParent(this);
         tanks.add(newTank);
 
     }

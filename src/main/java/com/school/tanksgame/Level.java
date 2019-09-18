@@ -8,11 +8,8 @@ import java.util.ArrayList;
 public class Level {
     PApplet p;
 
-
-
     private ArrayList<Wall> walls = new ArrayList<>();
     private ArrayList<HealthPad> healthPads = new ArrayList<>();
-
 
     public Level(PApplet parent) {
         p = parent;
@@ -24,8 +21,8 @@ public class Level {
         while(walls.size() < wallCount) {
             PVector startLoc = new PVector(p.random(paddingWalls, p.width-paddingWalls), p.random(paddingWalls, p.height-paddingWalls));
             PVector endLoc = new PVector(p.random(startLoc.x, p.width-paddingWalls), p.random(paddingWalls, p.height-paddingWalls));
-            Wall newWall = new Wall(p, startLoc, endLoc);
-
+            Wall newWall = new Wall(startLoc, endLoc);
+            newWall.setParent(p);
             Boolean isAllowed = true;
             //detect if it collides with other walls
             for(Wall wall : walls) {
@@ -52,7 +49,9 @@ public class Level {
                 }
             }
             if(isAllowed) {
-                healthPads.add(new HealthPad(p, loc));
+                HealthPad healthPad = new HealthPad(loc);
+                healthPad.setParent(p);
+                healthPads.add(healthPad);
             }
         }
     }
