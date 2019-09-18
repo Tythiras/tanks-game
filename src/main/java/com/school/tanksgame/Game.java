@@ -37,7 +37,7 @@ public class Game extends PApplet {
         controlsMap.put(38, Controls.DRIVING_FORWARD);
         controlsMap.put(40, Controls.DRIVING_BACKWARDS);
 
-        Tank newTank = new Tank(new PVector(width/2f, height/2f), controlsMap, 0xFF0000FF);
+        Tank newTank = new Tank(new PVector(50, 50), controlsMap, 0xFF0000FF);
         newTank.setParent(this);
         tanks.add(newTank);
     }
@@ -49,9 +49,6 @@ public class Game extends PApplet {
 
         map.draw();
         for(Tank tank : tanks) {
-            for(Wall wall : map.getWalls()) {
-                tank.detectCollision(wall);
-            }
             ArrayList<HealthPad> healthPads = map.getHealthPads();
             for(int i = healthPads.size(); i > 0; i--) {
                 HealthPad healthPad = healthPads.get(i-1);
@@ -64,7 +61,7 @@ public class Game extends PApplet {
                 }
             }
 
-            tank.update();
+            tank.update(map.getWalls());
             tank.draw();
         }
     }

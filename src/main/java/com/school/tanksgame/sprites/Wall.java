@@ -6,8 +6,8 @@ import processing.core.PVector;
 
 public class Wall extends Sprite {
 
-    private PVector startLoc;
-    private PVector endLoc;
+    PVector startLoc;
+    PVector endLoc;
     private final float width;
 
     public Wall(PVector startLoc, PVector endLoc) {
@@ -22,39 +22,19 @@ public class Wall extends Sprite {
         this.width = width;
     }
 
-    public float getA() {
-        return (this.startLoc.y - this.endLoc.y) / (this.startLoc.x - this.endLoc.x);
+    public PVector getLine() {
+        return PVector.sub(endLoc, startLoc);
     }
 
-    public float getB() {
-        return (-this.getA() * this.startLoc.x + this.startLoc.y);
-    }
-
-    public boolean isCrossingOther(Wall other) {
-        float a1 = this.getA();
-        float b1 = this.getB();
-
-        float a2 = other.getA();
-        float b2 = other.getB();
-
-        if(a1 != a2) {
-            float interX = -(b1 - b2) / (a1 - a2);
-            //x is between one of the lines
-            if(interX > startLoc.x && interX < endLoc.x) {
-                return true;
-            } else {
-                return false;
-            }
-
-        } else {
-            return false;
-        }
+    public float getWidth() {
+        return width;
     }
 
     public float distanceToPoint(PVector point) {
-        float a = this.getA();
-        float b = this.getB();
-        float dist = (float) (Math.abs(a * point.x + b - point.y) / Math.sqrt(Math.pow(a, 2)+1));
+        PVector line = this.getLine();
+        PVector startToPoint = PVector.sub(point, endLoc);
+        PVector proj = PVector.mult(line, (float) (PVector.dot(startToPoint, line) / Math.pow(line.mag(), 2)));
+        float dist = (float) Math.sqrt(Math.pow(startToPoint.mag(), 2) - Math.pow(proj.mag(), 2));
         return dist;
     }
 

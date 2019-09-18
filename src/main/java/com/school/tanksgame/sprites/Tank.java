@@ -1,5 +1,6 @@
 package com.school.tanksgame.sprites;
 
+import com.school.tanksgame.Collision;
 import com.school.tanksgame.Constants;
 import com.school.tanksgame.Controls;
 import processing.core.PConstants;
@@ -59,18 +60,6 @@ public class Tank extends Sprite {
     }
 
     public void detectCollision(Wall wall) {
-        for(Bullet bullet : bullets) {
-            float dist = wall.distanceToPoint(bullet.location);
-            System.out.println(wall.getA()+" : "+dist);
-            if(dist<Constants.WALL_WIDTH / 2 + Constants.BULLET_RADIUS) {
-                PVector normal = new PVector(1, -1 / wall.getA()).normalize();
-                PVector curr = bullet.getVelocity().copy();
-                float dotProduct = normal.dot(curr);
-
-                bullet.setVelocity(normal.mult(2*dotProduct).sub(curr));
-                System.out.println("Reflect");
-            }
-        }
     }
 
     public void keyAction(KeyEvent event) {
@@ -100,7 +89,10 @@ public class Tank extends Sprite {
        }
     }
 
-    public void update() {
+
+    public void update(ArrayList<Wall> walls) {
+
+
         //update rotation
         if (rotatingUp) {
             rotation += Constants.TANK_ROTATIONAL_VEL;
@@ -127,7 +119,33 @@ public class Tank extends Sprite {
             dirVec.mult(-1);
             newLoc.add(dirVec);
         }
-        if(newLoc.x < parent.width && newLoc.x > 0 && newLoc.y < parent.height && newLoc.y > 0 ) {
+
+        boolean newLocBlocked = !(newLoc.x < parent.width && newLoc.x > 0 && newLoc.y < parent.height && newLoc.y > 0 );
+        //check for walls thingy
+        for(Wall wall : walls) {
+            //bullets remove
+            for (Bullet bullet : bullets) {
+                boolean hitting = Collision.lineCircle(wall.startLoc.x, wall.startLoc.y, wall.endLoc.x, wall.endLoc.y, bullet.location.x, bullet.location.y, bullet.radius + wall.getWidth() / 2);
+                if (hitting) {
+                    PVector line = wall.getLine();
+                    PVector normal = new PVector(-line.y, line.x).setMag(1);
+                    PVector curr = bullet.velocity.copy();
+
+                    PVector newVector = curr.sub(normal.mult(2 * PVector.dot(curr, normal)));
+                    bullet.setVelocity(newVector);
+                    bullet.health--;
+                }
+            }
+            if(!newLocBlocked) {
+                boolean hitting = Collision.lineCircle(wall.startLoc.x, wall.startLoc.y, wall.endLoc.x, wall.endLoc.y, newLoc.x, newLoc.y, Constants.TANK_HEIGHT);
+                if(hitting) {
+                    newLocBlocked = true;
+                }
+            }
+        }
+
+
+        if(!newLocBlocked) {
             location = newLoc;
         }
 
