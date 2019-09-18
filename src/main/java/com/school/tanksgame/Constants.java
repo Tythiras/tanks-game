@@ -6,9 +6,11 @@ public class Constants {
     public static final float TANK_WIDTH = 30;
     public static final float TANK_HEIGHT = 30;
     public static final float TANK_SHAFT_HEIGHT = 20;
-    public static final float TANK_SHAFT_WIDTH = 5f;
-
-    public static final float WALL_WIDTH = 5f;
+    public static final float TANK_SHAFT_WIDTH = 5;
+    public static final float HEALTHBAR_WIDTH = 100;
+    public static final float HEALTHBAR_HEIGHT = 20;
+    public static final float HEALTHBAR_OFFSET = 50;
+    public static final int BULLET_HEALTH = 3;
 
     private Constants() {}
 }
