@@ -2,11 +2,14 @@ package com.school.tanksgame;
 
 import com.school.tanksgame.maploading.Map;
 import com.school.tanksgame.maploading.MapLoader;
+import com.school.tanksgame.sprites.HealthPad;
 import com.school.tanksgame.sprites.Tank;
+import com.school.tanksgame.sprites.Wall;
 import processing.core.PApplet;
 import processing.core.PVector;
 import processing.event.KeyEvent;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -46,6 +49,21 @@ public class Game extends PApplet {
 
         map.draw();
         for(Tank tank : tanks) {
+            for(Wall wall : map.getWalls()) {
+                tank.detectCollision(wall);
+            }
+            ArrayList<HealthPad> healthPads = map.getHealthPads();
+            for(int i = healthPads.size(); i > 0; i--) {
+                HealthPad healthPad = healthPads.get(i-1);
+                float distX = healthPad.getLocation().x - tank.getLocation().x;
+                float distY = healthPad.getLocation().y - tank.getLocation().y;
+                float dist = (float) Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
+                if(dist<Constants.HEALTHPAD_RADIUS) {
+                    healthPads.remove(healthPad);
+                    //add health to tank here JINYANG
+                }
+            }
+
             tank.update();
             tank.draw();
         }

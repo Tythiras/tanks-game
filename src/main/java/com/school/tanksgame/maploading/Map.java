@@ -12,6 +12,7 @@ public class Map extends Sprite {
     private ArrayList<Wall> walls;
     private ArrayList<HealthPad> healthPads;
 
+
     public Map(String name) {
         this.name = name;
         this.walls = new ArrayList<>();
@@ -35,6 +36,13 @@ public class Map extends Sprite {
 
     public void setWalls(ArrayList<Wall> walls) {
         this.walls = walls;
+    }
+
+    public ArrayList<Wall> getWalls() {
+        return walls;
+    }
+    public ArrayList<HealthPad> getHealthPads() {
+        return healthPads;
     }
 
     public void setHealthPads(ArrayList<HealthPad> healthPads) {

@@ -20,7 +20,9 @@ public class Constants {
     public static final float HEALTHBAR_OFFSET = 50;
 
     public static final float HEALTHPAD_RADIUS = 15;
+
     public static final int BULLET_HEALTH = 3;
+    public static final int BULLET_RADIUS = 5;
 
     private Constants() {}
 }

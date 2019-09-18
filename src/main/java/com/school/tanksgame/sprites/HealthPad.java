@@ -4,10 +4,14 @@ import com.school.tanksgame.Constants;
 import processing.core.PVector;
 
 public class HealthPad extends Sprite {
-    PVector location;
+    private PVector location;
 
     public HealthPad(PVector location) {
         this.location = location;
+    }
+
+    public PVector getLocation() {
+        return location;
     }
 
     public void draw() {

@@ -6,15 +6,23 @@ import processing.core.PVector;
 public class Bullet extends Sprite {
     PVector location;
     PVector velocity;
-    float force = 20;
+    float force = 0.2f;
 
-    float radius = 5;
+    float radius = Constants.BULLET_RADIUS;
     float health = Constants.BULLET_HEALTH;
 
     public Bullet(PVector location, float rotation) {
         this.location = location;
         PVector dirVec = PVector.fromAngle(rotation);
         velocity = dirVec.mult(force);
+    }
+
+    public void setVelocity(PVector velocity) {
+        this.velocity = velocity;
+    }
+
+    public PVector getVelocity() {
+        return velocity;
     }
 
     void update() {

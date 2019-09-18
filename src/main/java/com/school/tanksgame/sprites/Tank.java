@@ -45,6 +45,10 @@ public class Tank extends Sprite {
         this.shoot = false;
     }
 
+    public PVector getLocation() {
+        return location;
+    }
+
     public void shoot() {
         PVector dirVec = PVector.fromAngle(this.rotation);
         PVector startLoc = this.location.copy().add(dirVec.setMag((Constants.TANK_HEIGHT / 2) +Constants.TANK_SHAFT_HEIGHT));
@@ -52,6 +56,21 @@ public class Tank extends Sprite {
         Bullet bullet = new Bullet(startLoc, this.rotation);
         bullet.setParent(parent);
         bullets.add(bullet);
+    }
+
+    public void detectCollision(Wall wall) {
+        for(Bullet bullet : bullets) {
+            float dist = wall.distanceToPoint(bullet.location);
+            System.out.println(wall.getA()+" : "+dist);
+            if(dist<Constants.WALL_WIDTH / 2 + Constants.BULLET_RADIUS) {
+                PVector normal = new PVector(1, -1 / wall.getA()).normalize();
+                PVector curr = bullet.getVelocity().copy();
+                float dotProduct = normal.dot(curr);
+
+                bullet.setVelocity(normal.mult(2*dotProduct).sub(curr));
+                System.out.println("Reflect");
+            }
+        }
     }
 
     public void keyAction(KeyEvent event) {
