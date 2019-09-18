@@ -6,7 +6,7 @@ import processing.core.PVector;
 public class Bullet extends Sprite {
     PVector location;
     PVector velocity;
-    float force = 0.2f;
+    float force = 10;
 
     float radius = Constants.BULLET_RADIUS;
     float health = Constants.BULLET_HEALTH;
