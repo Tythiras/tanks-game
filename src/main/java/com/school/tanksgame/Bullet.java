@@ -9,7 +9,7 @@ public class Bullet extends Sprite {
     float force = 20;
 
     float radius = 5;
-    float health = 5;
+    float health = Constants.BULLET_HEALTH;
 
     public Bullet(PVector location, float rotation) {
         this.location = location;
@@ -45,6 +45,7 @@ public class Bullet extends Sprite {
 
     public void draw() {
         if(isAlive()) {
+            parent.fill(255 - (255 / Constants.BULLET_HEALTH) * health);
             parent.ellipse(location.x, location.y, radius*2, radius*2);
         }
     }

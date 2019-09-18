@@ -58,6 +58,7 @@ public class Wall extends Sprite{
         float length = (float) Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
         float angle = (float) Math.atan(distY /  distX);
 
+        parent.fill(255);
         parent.translate(startLoc.x, startLoc.y);
         parent.rotate(angle);
         parent.rectMode(CENTER);

@@ -2,9 +2,11 @@ package com.school.tanksgame;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PGraphics;
 import processing.core.PVector;
 import processing.event.KeyEvent;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -15,6 +17,8 @@ public class Tank extends Sprite {
     private PVector location;
     private float rotation;
 
+    private int color;
+
     private boolean shoot;
 
     private boolean rotatingUp;
@@ -22,13 +26,15 @@ public class Tank extends Sprite {
     private boolean drivingForwards;
     private boolean drivingBackwards;
 
-    public Tank(PVector location, Map<Integer, Controls> controls) {
+    public Tank(PVector location, Map<Integer, Controls> controls, int color) {
         this.controls = controls;
         this.location = location;
 
         this.rotation = 0;
 
-        bullets = new ArrayList<>();
+        this.color = color;
+
+        this.bullets = new ArrayList<>();
 
         this.rotatingUp = false;
         this.rotatingDown = false;
@@ -125,9 +131,16 @@ public class Tank extends Sprite {
     public void draw() {
         parent.pushMatrix();
         parent.translate(location.x, location.y);
-        parent.rotate(rotation);
 
         parent.rectMode(PConstants.CENTER);
+
+        //health bar
+        parent.fill(50);
+        parent.rect(0, -Constants.HEALTHBAR_OFFSET, Constants.HEALTHBAR_WIDTH, Constants.HEALTHBAR_HEIGHT);
+
+        //main body and shaft
+        parent.fill(parent.color(this.color));
+        parent.rotate(rotation);
         //main body
         parent.rect(0, 0, Constants.TANK_WIDTH, Constants.TANK_HEIGHT);
 
