@@ -9,10 +9,18 @@ public class Wall extends Sprite{
 
     private PVector startLoc;
     private PVector endLoc;
+    private final float width;
 
     public Wall(PVector startLoc, PVector endLoc) {
         this.startLoc = startLoc;
         this.endLoc = endLoc;
+        this.width = Constants.WALL_WIDTH;
+    }
+
+    public Wall(PVector startLoc, PVector endLoc, float width) {
+        this.startLoc = startLoc;
+        this.endLoc = endLoc;
+        this.width = width;
     }
 
     float getA() {
@@ -61,7 +69,7 @@ public class Wall extends Sprite{
         parent.translate(startLoc.x, startLoc.y);
         parent.rotate(angle);
         parent.rectMode(CENTER);
-        parent.rect(length/2, 0, length, 5);
+        parent.rect(length/2, 0, length, this.width);
 
         parent.popMatrix();
     }

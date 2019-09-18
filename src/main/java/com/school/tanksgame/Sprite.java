@@ -2,7 +2,7 @@ package com.school.tanksgame;
 
 import processing.core.PApplet;
 
-public class Sprite implements PAppletChild {
+public abstract class Sprite implements PAppletChild {
     protected PApplet parent;
 
     @Override
