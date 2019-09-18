@@ -1,4 +1,4 @@
-package com.school.tanksgame;
+package com.school.tanksgame.sprites;
 
 import processing.core.PApplet;
 

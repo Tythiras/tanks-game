@@ -1,12 +1,13 @@
-package com.school.tanksgame;
+package com.school.tanksgame.maploading;
 
+import com.school.tanksgame.sprites.HealthPad;
+import com.school.tanksgame.sprites.Wall;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import processing.core.PVector;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class MapLoader {
         this.maps = new HashMap<>();
     }
 
-    void load() {
+    public void load() {
         JSONParser parser = new JSONParser();
         try {
             JSONArray jsonArray = (JSONArray) parser.parse(new FileReader(loadFilePath));

@@ -1,11 +1,11 @@
-package com.school.tanksgame;
+package com.school.tanksgame.sprites;
 
-import processing.core.PApplet;
+import com.school.tanksgame.Constants;
 import processing.core.PVector;
 
 import static processing.core.PConstants.CENTER;
 
-public class Wall extends Sprite{
+public class Wall extends Sprite {
 
     private PVector startLoc;
     private PVector endLoc;
@@ -23,15 +23,15 @@ public class Wall extends Sprite{
         this.width = width;
     }
 
-    float getA() {
+    public float getA() {
         return (this.startLoc.y - this.endLoc.y) / (this.startLoc.x - this.endLoc.x);
     }
 
-    float getB() {
+    public float getB() {
         return (-this.getA() * this.startLoc.x + this.startLoc.y);
     }
 
-    boolean isCrossingOther(Wall other) {
+    public boolean isCrossingOther(Wall other) {
         float a1 = this.getA();
         float b1 = this.getB();
 
@@ -52,7 +52,7 @@ public class Wall extends Sprite{
         }
     }
 
-    float distanceToPoint(PVector point) {
+    public float distanceToPoint(PVector point) {
         float a = this.getA();
         float b = this.getB();
         float dist = (float) (Math.abs(a * point.x + b - point.y) / Math.sqrt(Math.pow(a, 2)+1));

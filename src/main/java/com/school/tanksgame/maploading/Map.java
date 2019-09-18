@@ -1,6 +1,9 @@
-package com.school.tanksgame;
+package com.school.tanksgame.maploading;
 
-import java.lang.reflect.Array;
+import com.school.tanksgame.sprites.HealthPad;
+import com.school.tanksgame.sprites.Sprite;
+import com.school.tanksgame.sprites.Wall;
+
 import java.util.ArrayList;
 
 public class Map extends Sprite {

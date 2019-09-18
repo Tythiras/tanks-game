@@ -1,12 +1,11 @@
-package com.school.tanksgame;
+package com.school.tanksgame.sprites;
 
-import processing.core.PApplet;
+import com.school.tanksgame.Constants;
+import com.school.tanksgame.Controls;
 import processing.core.PConstants;
-import processing.core.PGraphics;
 import processing.core.PVector;
 import processing.event.KeyEvent;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -79,7 +78,7 @@ public class Tank extends Sprite {
        }
     }
 
-    void update() {
+    public void update() {
         //update rotation
         if (rotatingUp) {
             rotation += Constants.TANK_ROTATIONAL_VEL;

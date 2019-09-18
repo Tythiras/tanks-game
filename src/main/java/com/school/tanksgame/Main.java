@@ -1,5 +1,6 @@
 package com.school.tanksgame;
 
+import com.school.tanksgame.sprites.Tank;
 import processing.core.PApplet;
 import processing.core.PVector;
 import processing.event.KeyEvent;
