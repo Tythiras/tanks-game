@@ -23,6 +23,8 @@ public class Main extends PApplet {
         currLevel.generateLevel(5, 5);
 
         Map<Integer, Controls> controlsMap = new HashMap<>();
+        controlsMap.put(10, Controls.SHOOT);
+
         controlsMap.put(39, Controls.ROTATE_UP);
         controlsMap.put(37, Controls.ROTATE_DOWN);
         controlsMap.put(38, Controls.DRIVING_FORWARD);
@@ -47,6 +49,7 @@ public class Main extends PApplet {
 
     @Override
     public void keyPressed(KeyEvent event) {
+        println(keyCode);
         for(Tank tank : tanks)
             tank.keyAction(event);
     }

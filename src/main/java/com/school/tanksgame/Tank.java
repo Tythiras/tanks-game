@@ -5,15 +5,18 @@ import processing.core.PConstants;
 import processing.core.PVector;
 import processing.event.KeyEvent;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class Tank {
-
     Map<Integer, Controls> controls;
+    ArrayList<Bullet> bullets;
 
     private PApplet p;
     private PVector location;
     private float rotation;
+
+    private boolean shoot;
 
     private boolean rotatingUp;
     private boolean rotatingDown;
@@ -26,10 +29,21 @@ public class Tank {
         this.location = location;
 
         this.rotation = 0;
+
+        bullets = new ArrayList<>();
+
         this.rotatingUp = false;
         this.rotatingDown = false;
         this.drivingForwards = false;
         this.drivingBackwards = false;
+        this.shoot = false;
+    }
+
+    public void shoot() {
+        PVector dirVec = PVector.fromAngle(this.rotation);
+        PVector startLoc = this.location.copy().add(dirVec.setMag((Constants.TANK_HEIGHT / 2) +Constants.TANK_SHAFT_HEIGHT));
+
+        bullets.add(new Bullet(p, startLoc, this.rotation));
     }
 
     public void keyAction(KeyEvent event) {
@@ -41,6 +55,9 @@ public class Tank {
 
        switch (control) {
            // keyAction == 1 means that it's keyPressed, otherwise keyReleased
+           case SHOOT:
+               shoot = keyAction == 1;
+               break;
            case ROTATE_UP:
                rotatingUp = keyAction == 1;
                break;
@@ -86,6 +103,24 @@ public class Tank {
         if(newLoc.x < p.width && newLoc.x > 0 && newLoc.y < p.height && newLoc.y > 0 ) {
             location = newLoc;
         }
+
+        //shoot if button is pressed
+        if(shoot) {
+            this.shoot();
+
+            //no machine guns here
+            shoot = false;
+        }
+
+
+        //update bullets
+        for(int i = bullets.size(); i > 0; i--) {
+            Bullet bullet = bullets.get(i-1);
+            bullet.update();
+            if(!bullet.isAlive()) {
+                bullets.remove(bullet);
+            }
+        }
     }
 
     void draw() {
@@ -98,11 +133,15 @@ public class Tank {
         p.rect(0, 0, Constants.TANK_WIDTH, Constants.TANK_HEIGHT);
 
         //cannon shaft
-        float shaftWidth = (float) (Constants.TANK_WIDTH / 1.25);
-        float shaftHeight = Constants.TANK_HEIGHT / 5;
-        p.rect(shaftWidth / 2 + Constants.TANK_WIDTH / 2, 0, shaftWidth, shaftHeight);
-
+        float shaftWidth = Constants.TANK_SHAFT_WIDTH;
+        float shaftHeight = Constants.TANK_SHAFT_HEIGHT;
+        p.rect(shaftHeight / 2 + Constants.TANK_WIDTH / 2, 0, shaftHeight, shaftWidth);
 
         p.popMatrix();
+
+        //draw bullets
+        for(Bullet bullet : bullets) {
+            bullet.draw();
+        }
     }
 }

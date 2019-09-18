@@ -4,5 +4,6 @@ public enum Controls {
     ROTATE_DOWN,
     ROTATE_UP,
     DRIVING_FORWARD,
-    DRIVING_BACKWARDS
+    DRIVING_BACKWARDS,
+    SHOOT
 }
