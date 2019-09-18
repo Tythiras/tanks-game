@@ -18,6 +18,8 @@ public class Constants {
     public static final float HEALTHBAR_WIDTH = 70;
     public static final float HEALTHBAR_HEIGHT = 10;
     public static final float HEALTHBAR_OFFSET = 50;
+
+    public static final float HEALTHPAD_RADIUS = 15;
     public static final int BULLET_HEALTH = 3;
 
     private Constants() {}

@@ -132,7 +132,8 @@ public class Tank extends Sprite {
 
     public void draw() {
         if(health>0) {
-            parent.strokeWeight(0);
+            parent.stroke(0);
+            parent.strokeWeight(1);
             parent.pushMatrix();
             parent.translate(location.x, location.y);
 
