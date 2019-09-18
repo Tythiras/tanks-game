@@ -1,6 +1,6 @@
-package com.school.tanksgame;
+package com.school.tanksgame.sprites;
 
-import processing.core.PApplet;
+import com.school.tanksgame.Constants;
 import processing.core.PVector;
 
 public class Bullet extends Sprite {

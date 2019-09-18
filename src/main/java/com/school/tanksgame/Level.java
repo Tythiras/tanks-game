@@ -1,5 +1,7 @@
 package com.school.tanksgame;
 
+import com.school.tanksgame.sprites.HealthPad;
+import com.school.tanksgame.sprites.Wall;
 import processing.core.PApplet;
 import processing.core.PVector;
 

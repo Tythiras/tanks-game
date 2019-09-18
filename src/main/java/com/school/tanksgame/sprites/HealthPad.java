@@ -1,12 +1,11 @@
-package com.school.tanksgame;
+package com.school.tanksgame.sprites;
 
-import processing.core.PApplet;
 import processing.core.PVector;
 
 public class HealthPad extends Sprite {
     PVector location;
 
-    HealthPad(PVector location) {
+    public HealthPad(PVector location) {
         this.location = location;
     }
 
