@@ -17,8 +17,11 @@ public class Tank extends Sprite {
     private float rotation;
 
     private int color;
+    private float health = Constants.TANK_START_HEALTH;
 
     private boolean shoot;
+
+    private int fireDelay = 0;
 
     private boolean rotatingUp;
     private boolean rotatingDown;
@@ -79,6 +82,7 @@ public class Tank extends Sprite {
     }
 
     public void update() {
+        health -= 0.1;
         //update rotation
         if (rotatingUp) {
             rotation += Constants.TANK_ROTATIONAL_VEL;
@@ -128,31 +132,37 @@ public class Tank extends Sprite {
     }
 
     public void draw() {
-        parent.pushMatrix();
-        parent.translate(location.x, location.y);
+        if(health>0) {
+            parent.pushMatrix();
+            parent.translate(location.x, location.y);
 
-        parent.rectMode(PConstants.CENTER);
+            parent.rectMode(PConstants.CORNER);
+            //health bar
+            float healthFactor = (255 / Constants.TANK_START_HEALTH) * this.health;
+            parent.fill(255);
+            parent.rect(-Constants.HEALTHBAR_WIDTH / 2, -(Constants.HEALTHBAR_OFFSET + Constants.HEALTHBAR_HEIGHT), Constants.HEALTHBAR_WIDTH, Constants.HEALTHBAR_HEIGHT);
+            parent.fill(255 - healthFactor, healthFactor, 0);
+            parent.rect(-Constants.HEALTHBAR_WIDTH / 2, -(Constants.HEALTHBAR_OFFSET + Constants.HEALTHBAR_HEIGHT), (Constants.HEALTHBAR_WIDTH / Constants.TANK_START_HEALTH) * this.health, Constants.HEALTHBAR_HEIGHT);
 
-        //health bar
-        parent.fill(50);
-        parent.rect(0, -Constants.HEALTHBAR_OFFSET, Constants.HEALTHBAR_WIDTH, Constants.HEALTHBAR_HEIGHT);
 
-        //main body and shaft
-        parent.fill(parent.color(this.color));
-        parent.rotate(rotation);
-        //main body
-        parent.rect(0, 0, Constants.TANK_WIDTH, Constants.TANK_HEIGHT);
+            parent.rectMode(PConstants.CENTER);
+            //main body and shaft
+            parent.fill(parent.color(this.color));
+            parent.rotate(rotation);
+            //main body
+            parent.rect(0, 0, Constants.TANK_WIDTH, Constants.TANK_HEIGHT);
 
-        //cannon shaft
-        float shaftWidth = Constants.TANK_SHAFT_WIDTH;
-        float shaftHeight = Constants.TANK_SHAFT_HEIGHT;
-        parent.rect(shaftHeight / 2 + Constants.TANK_WIDTH / 2, 0, shaftHeight, shaftWidth);
+            //cannon shaft
+            float shaftWidth = Constants.TANK_SHAFT_WIDTH;
+            float shaftHeight = Constants.TANK_SHAFT_HEIGHT;
+            parent.rect(shaftHeight / 2 + Constants.TANK_WIDTH / 2, 0, shaftHeight, shaftWidth);
 
-        parent.popMatrix();
+            parent.popMatrix();
 
-        //draw bullets
-        for(Bullet bullet : bullets) {
-            bullet.draw();
+            //draw bullets
+            for (Bullet bullet : bullets) {
+                bullet.draw();
+            }
         }
     }
 }
