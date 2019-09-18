@@ -10,6 +10,7 @@ public class HealthPad extends Sprite {
     }
 
     public void draw() {
+        parent.strokeWeight(1);
         parent.ellipse(location.x, location.y, 20, 20);
     }
 }

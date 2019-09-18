@@ -60,19 +60,9 @@ public class Wall extends Sprite {
     }
 
     public void draw() {
-        parent.pushMatrix();
-        float distX = startLoc.x - endLoc.x;
-        float distY = startLoc.y - endLoc.y;
-        float length = (float) Math.sqrt(Math.pow(distX, 2) + Math.pow(distY, 2));
-        float angle = (float) Math.atan(distY /  distX);
-
-        parent.fill(255);
-        parent.translate(startLoc.x, startLoc.y);
-        parent.rotate(angle);
-        parent.rectMode(CENTER);
-        parent.rect(length/2, 0, length, this.width);
-
-        parent.popMatrix();
+        parent.strokeWeight(width);
+        parent.stroke(0);
+        parent.line(startLoc.x, startLoc.y, endLoc.x, endLoc.y);
     }
 
 }

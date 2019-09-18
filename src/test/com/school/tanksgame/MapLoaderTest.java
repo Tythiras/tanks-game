@@ -7,7 +7,7 @@ class MapLoaderTest {
 
     @Test
     void load() {
-        MapLoader mapLoader = new MapLoader("maps.json");
+        MapLoader mapLoader = new MapLoader("maps.json", null);
         mapLoader.load();
     }
 
