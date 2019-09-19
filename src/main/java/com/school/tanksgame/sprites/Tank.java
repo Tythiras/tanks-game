@@ -121,6 +121,7 @@ public class Tank extends Sprite {
         }
 
         boolean newLocBlocked = !(newLoc.x < parent.width && newLoc.x > 0 && newLoc.y < parent.height && newLoc.y > 0 );
+        System.out.println(newLocBlocked);
         //check for walls thingy
         for(Wall wall : walls) {
             //bullets remove
