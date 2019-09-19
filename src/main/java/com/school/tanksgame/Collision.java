@@ -24,8 +24,6 @@ public class Collision {
         boolean onSegment = linePoint(x1,y1,x2,y2, closestX,closestY);
         if (!onSegment) return false;
 
-        // optionally, draw a circle at the closest
-        // point on the line
         // get distance to closest point
         distX = closestX - cx;
         distY = closestY - cy;

@@ -181,9 +181,10 @@ public class Tank extends Sprite {
                 PVector blockedVelocity;
 
                 //if it's on the end of the walls detection
+                boolean onWallEdge = false;
                 //find the lowest point and highest point on the line
                 PVector lowPoint, highPoint;
-                if(wall.startLoc.y < wall.endLoc.y) {
+                if(wall.startLoc.y <= wall.endLoc.y) {
                     lowPoint = wall.startLoc;
                     highPoint = wall.endLoc;
                 } else {
@@ -195,13 +196,25 @@ public class Tank extends Sprite {
 
                 //define line formulas for the highest and lowest point
                 float a = Collision.getLineA(perpen);
-                float b1 = lowPoint.y - a * lowPoint.x;
-                float b2 = highPoint.y - a * highPoint.x;
+                //if it's a horizontal line
+                if(a==Float.POSITIVE_INFINITY || a==Float.NEGATIVE_INFINITY) {
+                    if(location.x < lowPoint.x || location.x > highPoint.x) {
+                        onWallEdge = true;
+                    }
+                //else i can use linear algebra
+                } else {
+                    float b1 = lowPoint.y - a * lowPoint.x;
+                    float b2 = highPoint.y - a * highPoint.x;
 
-                float yOnLine1 = a * location.x + b1;
-                float yOnLine2 = a * location.x + b2;
-                //check if it's below the lowest points line or above the highest points line
-                if(yOnLine1>location.y || yOnLine2 < location.y) {
+                    float yOnLine1 = a * location.x + b1;
+                    float yOnLine2 = a * location.x + b2;
+                    //check if it's below the lowest points line or above the highest points line
+                    if(yOnLine1>location.y || yOnLine2 < location.y) {
+                        onWallEdge = true;
+                    }
+                }
+
+                if(onWallEdge) {
                     blockedVelocity = Collision.projection(dirVec, perpen);
                 } else {
                     blockedVelocity = Collision.projection(dirVec, line);
