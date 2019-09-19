@@ -124,9 +124,6 @@ public class Tank extends Sprite {
                 if(Collision.dist(bullet.getLocation(), tank.getLocation()) < bullet.getRadius() + Constants.TANK_HITBOX) {
                     bullets.remove(bullet);
                     tank.damage();
-                    if(!tank.isAlive()) {
-                        tanks.remove(tank);
-                    }
                 }
             }
         }
@@ -171,6 +168,7 @@ public class Tank extends Sprite {
                     PVector normal = new PVector(-line.y, line.x).setMag(1);
                     PVector curr = bullet.getVelocity().copy();
 
+                    //reflection angle is taken from http://mathworld.wolfram.com/Reflection.html
                     PVector newVector = curr.sub(normal.mult(2 * PVector.dot(curr, normal)));
                     bullet.setVelocity(newVector);
                     bullet.damage();
@@ -178,10 +176,39 @@ public class Tank extends Sprite {
             }
             boolean hitting = Collision.lineCircle(wall.startLoc.x, wall.startLoc.y, wall.endLoc.x, wall.endLoc.y, newLoc.x, newLoc.y, Constants.TANK_HITBOX);
             if(hitting) {
+                PVector line = wall.getLine();
                 //if it's going inside a wall, it should just move it along the line
-                PVector blockedVelocity = Collision.projection(dirVec, wall.getLine());
+                PVector blockedVelocity;
+
+                //if it's on the end of the walls detection
+                //find the lowest point and highest point on the line
+                PVector lowPoint, highPoint;
+                if(wall.startLoc.y < wall.endLoc.y) {
+                    lowPoint = wall.startLoc;
+                    highPoint = wall.endLoc;
+                } else {
+                    lowPoint = wall.endLoc;
+                    highPoint = wall.startLoc;
+                }
+                //get the perpendicular vectors of our line
+                PVector perpen = Collision.getPerpendicular(line);
+
+                //define line formulas for the highest and lowest point
+                float a = Collision.getLineA(perpen);
+                float b1 = lowPoint.y - a * lowPoint.x;
+                float b2 = highPoint.y - a * highPoint.x;
+
+                float yOnLine1 = a * location.x + b1;
+                float yOnLine2 = a * location.x + b2;
+                //check if it's below the lowest points line or above the highest points line
+                if(yOnLine1>location.y || yOnLine2 < location.y) {
+                    blockedVelocity = Collision.projection(dirVec, perpen);
+                } else {
+                    blockedVelocity = Collision.projection(dirVec, line);
+                }
+
+                //update location
                 newLoc = new PVector(location.x, location.y).add(blockedVelocity);
-                //newLocBlocked = true;
             }
         }
 

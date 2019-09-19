@@ -3,6 +3,7 @@ package com.school.tanksgame;
 import processing.core.PVector;
 
 public class Collision {
+    // lineCircle AND linePoint is taken from http://www.jeffreythompson.org/collision-detection/line-circle.php
     // LINE/CIRCLE
     public static boolean lineCircle(float x1, float y1, float x2, float y2, float cx, float cy, float r) {
 
@@ -64,6 +65,18 @@ public class Collision {
     public static PVector projection(PVector vec1, PVector vec2) {
         return PVector.mult(vec2, (float) (PVector.dot(vec1, vec2) / Math.pow(vec2.mag(), 2)));
     }
+    public static PVector getPerpendicular(PVector vec) {
+        return new PVector(-vec.y, vec.x);
+    }
+    public static float getLineA(PVector vec) {
+        return vec.y / vec.x;
+    }
+
+    public static float angleVectors(PVector vec1, PVector vec2) {
+        return (float) Math.acos(PVector.dot(vec1, vec2) / (vec1.mag() * vec2.mag()));
+    }
+
+    //distance formler
     public static float dist(float x1, float y1, float x2, float y2) {
         return (float) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
