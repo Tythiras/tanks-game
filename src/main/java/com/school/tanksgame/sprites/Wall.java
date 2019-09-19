@@ -1,5 +1,6 @@
 package com.school.tanksgame.sprites;
 
+import com.school.tanksgame.Collision;
 import com.school.tanksgame.Constants;
 import processing.core.PConstants;
 import processing.core.PVector;
@@ -30,13 +31,6 @@ public class Wall extends Sprite {
         return width;
     }
 
-    public float distanceToPoint(PVector point) {
-        PVector line = this.getLine();
-        PVector startToPoint = PVector.sub(point, endLoc);
-        PVector proj = PVector.mult(line, (float) (PVector.dot(startToPoint, line) / Math.pow(line.mag(), 2)));
-        float dist = (float) Math.sqrt(Math.pow(startToPoint.mag(), 2) - Math.pow(proj.mag(), 2));
-        return dist;
-    }
 
     public void draw() {
         parent.strokeWeight(width);

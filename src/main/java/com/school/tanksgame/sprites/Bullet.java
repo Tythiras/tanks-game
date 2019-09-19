@@ -4,12 +4,12 @@ import com.school.tanksgame.Constants;
 import processing.core.PVector;
 
 public class Bullet extends Sprite {
-    PVector location;
-    PVector velocity;
-    float force = 10;
+    private PVector location;
+    private PVector velocity;
+    private float force = 10;
 
-    float radius = Constants.BULLET_RADIUS;
-    float health = Constants.BULLET_HEALTH;
+    private float radius = Constants.BULLET_RADIUS;
+    private float health = Constants.BULLET_HEALTH;
 
     public Bullet(PVector location, float rotation) {
         this.location = location;
@@ -61,4 +61,14 @@ public class Bullet extends Sprite {
         return health > 0 ? true : false;
     }
 
+    public PVector getLocation() {
+        return location;
+    }
+    public void damage() {
+        this.health--;
+    }
+
+    public float getRadius() {
+        return radius;
+    }
 }

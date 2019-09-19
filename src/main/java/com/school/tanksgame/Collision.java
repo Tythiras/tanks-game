@@ -1,5 +1,7 @@
 package com.school.tanksgame;
 
+import processing.core.PVector;
+
 public class Collision {
     // LINE/CIRCLE
     public static boolean lineCircle(float x1, float y1, float x2, float y2, float cx, float cy, float r) {
@@ -58,7 +60,14 @@ public class Collision {
         }
         return false;
     }
-    public static final float dist(float x1, float y1, float x2, float y2) {
+    //projection af vektorer på vektorer
+    public static PVector projection(PVector vec1, PVector vec2) {
+        return PVector.mult(vec2, (float) (PVector.dot(vec1, vec2) / Math.pow(vec2.mag(), 2)));
+    }
+    public static float dist(float x1, float y1, float x2, float y2) {
         return (float) Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    }
+    public static float dist(PVector loc1, PVector loc2) {
+        return (float) Math.sqrt(Math.pow(loc2.x - loc1.x, 2) + Math.pow(loc1.y - loc2.y, 2));
     }
 }

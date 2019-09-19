@@ -51,13 +51,32 @@ public class Tank extends Sprite {
     }
 
     public void shoot() {
-        PVector dirVec = PVector.fromAngle(this.rotation);
-        PVector startLoc = this.location.copy().add(dirVec.setMag((Constants.TANK_HEIGHT / 2) +Constants.TANK_SHAFT_HEIGHT));
+        if(fireDelay==0) {
+            PVector dirVec = PVector.fromAngle(this.rotation);
+            PVector startLoc = this.location.copy().add(dirVec.setMag((Constants.TANK_HEIGHT / 2) +Constants.TANK_SHAFT_HEIGHT));
 
-        Bullet bullet = new Bullet(startLoc, this.rotation);
-        bullet.setParent(parent);
-        bullets.add(bullet);
+            Bullet bullet = new Bullet(startLoc, this.rotation);
+            bullet.setParent(parent);
+            bullets.add(bullet);
+            fireDelay = Constants.TANK_FIRE_DELAY;
+        }
     }
+    public void damage() {
+        this.health--;
+    }
+
+    public float getHealth() {
+        return health;
+    }
+
+    public void addHealth() {
+        this.health += 1;
+    }
+
+    boolean isAlive() {
+        return health > 0 ? true : false;
+    }
+
 
     public void detectCollision(Wall wall) {
     }
@@ -90,8 +109,27 @@ public class Tank extends Sprite {
     }
 
 
-    public void update(ArrayList<Wall> walls) {
+    public void update(ArrayList<Wall> walls, ArrayList<Tank> tanks) {
+        //rapid fire reduce delay
+        if(fireDelay>0) {
+            fireDelay--;
+        }
 
+        //bullet detection
+
+        for (int i = bullets.size(); i > 0; i--) {
+            Bullet bullet = bullets.get(i-1);
+            for(int i2 = tanks.size(); i2 > 0; i2--) {
+                Tank tank = tanks.get(i2-1);
+                if(Collision.dist(bullet.getLocation(), tank.getLocation()) < bullet.getRadius() + Constants.TANK_HITBOX) {
+                    bullets.remove(bullet);
+                    tank.damage();
+                    if(!tank.isAlive()) {
+                        tanks.remove(tank);
+                    }
+                }
+            }
+        }
 
         //update rotation
         if (rotatingUp) {
@@ -120,35 +158,35 @@ public class Tank extends Sprite {
             newLoc.add(dirVec);
         }
 
-        boolean newLocBlocked = !(newLoc.x < parent.width && newLoc.x > 0 && newLoc.y < parent.height && newLoc.y > 0 );
-        System.out.println(newLocBlocked);
+        //window border code
+        //!(newLoc.x < parent.width && newLoc.x > 0 && newLoc.y < parent.height && newLoc.y > 0 );
+
         //check for walls thingy
         for(Wall wall : walls) {
             //bullets remove
             for (Bullet bullet : bullets) {
-                boolean hitting = Collision.lineCircle(wall.startLoc.x, wall.startLoc.y, wall.endLoc.x, wall.endLoc.y, bullet.location.x, bullet.location.y, bullet.radius + wall.getWidth() / 2);
+                boolean hitting = Collision.lineCircle(wall.startLoc.x, wall.startLoc.y, wall.endLoc.x, wall.endLoc.y, bullet.getLocation().x, bullet.getLocation().y, bullet.getRadius() + wall.getWidth() / 2);
                 if (hitting) {
                     PVector line = wall.getLine();
                     PVector normal = new PVector(-line.y, line.x).setMag(1);
-                    PVector curr = bullet.velocity.copy();
+                    PVector curr = bullet.getVelocity().copy();
 
                     PVector newVector = curr.sub(normal.mult(2 * PVector.dot(curr, normal)));
                     bullet.setVelocity(newVector);
-                    bullet.health--;
+                    bullet.damage();
                 }
             }
-            if(!newLocBlocked) {
-                boolean hitting = Collision.lineCircle(wall.startLoc.x, wall.startLoc.y, wall.endLoc.x, wall.endLoc.y, newLoc.x, newLoc.y, Constants.TANK_HEIGHT);
-                if(hitting) {
-                    newLocBlocked = true;
-                }
+            boolean hitting = Collision.lineCircle(wall.startLoc.x, wall.startLoc.y, wall.endLoc.x, wall.endLoc.y, newLoc.x, newLoc.y, Constants.TANK_HITBOX);
+            if(hitting) {
+                //if it's going inside a wall, it should just move it along the line
+                PVector blockedVelocity = Collision.projection(dirVec, wall.getLine());
+                newLoc = new PVector(location.x, location.y).add(blockedVelocity);
+                //newLocBlocked = true;
             }
         }
 
 
-        if(!newLocBlocked) {
-            location = newLoc;
-        }
+        location = newLoc;
 
         //shoot if button is pressed
         if(shoot) {
@@ -169,7 +207,7 @@ public class Tank extends Sprite {
     }
 
     public void draw() {
-        if(health>0) {
+        if(this.isAlive()) {
             parent.stroke(0);
             parent.strokeWeight(1);
             parent.pushMatrix();
