@@ -14,7 +14,6 @@ import processing.core.PVector;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MapLoader {
@@ -39,7 +38,7 @@ public class MapLoader {
                 String name = (String) jsonObject.get("name");
 
                 Map map = new Map(name, walls, healthPads, tanks);
-                map.setParent(parent);
+                map.init(parent);
 
                 maps.add(map);
             }

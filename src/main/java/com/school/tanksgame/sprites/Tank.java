@@ -49,32 +49,12 @@ public class Tank extends Sprite {
         return location;
     }
 
-    public void shoot() {
-        if(fireDelay==0) {
-            PVector dirVec = PVector.fromAngle(this.rotation);
-            PVector startLoc = this.location.copy().add(dirVec.setMag((Constants.TANK_HEIGHT / 2) +Constants.TANK_SHAFT_HEIGHT));
-
-            Bullet bullet = new Bullet(startLoc, this.rotation);
-            bullet.setParent(parent);
-            bullets.add(bullet);
-            fireDelay = Constants.TANK_FIRE_DELAY;
-        }
-    }
-
-    public void damage() {
-        this.health--;
-    }
-
     public float getHealth() {
         return health;
     }
 
     public void addHealth() {
        this.health++;
-    }
-
-    public boolean isAlive() {
-        return health > 0;
     }
 
     public void keyAction(KeyEvent event) {
@@ -104,7 +84,7 @@ public class Tank extends Sprite {
        }
     }
 
-
+    @Deprecated
     public void update(ArrayList<Wall> walls, ArrayList<Tank> tanks) {
         //rapid fire reduce delay
         if(fireDelay>0) {
@@ -233,49 +213,113 @@ public class Tank extends Sprite {
 
 
         //update bullets
-        for(int i = bullets.size(); i > 0; i--) {
-            Bullet bullet = bullets.get(i-1);
-            bullet.update();
-            if(!bullet.isAlive()) {
-                bullets.remove(bullet);
+//        for(int i = bullets.size(); i > 0; i--) {
+//            Bullet bullet = bullets.get(i-1);
+//            bullet.update();
+//            if(!bullet.isAlive()) {
+//                bullets.remove(bullet);
+//            }
+//        }
+    }
+
+    @Override
+    public void update() {
+        //rapid fire reduce delay
+        if(fireDelay>0) {
+            fireDelay--;
+        }
+
+        if (rotatingUp) {
+            rotation += Constants.TANK_ROTATIONAL_VEL;
+            if (rotation > 2*Math.PI) {
+                rotation = 0;
             }
+        }
+        else if (rotatingDown) {
+            rotation -= Constants.TANK_ROTATIONAL_VEL;
+            if (rotation < 0) {
+                rotation = (float) (2*Math.PI);
+            }
+        }
+        //update location and make sure it isn't over the window boundaries
+        PVector newLoc = new PVector(location.x, location.y);
+        PVector dirVec = PVector.fromAngle(rotation);
+        dirVec.setMag(Constants.TANK_DRIVING_VEL);
+
+        if (drivingForwards) {
+            newLoc.add(dirVec);
+        }
+        if (drivingBackwards) {
+            dirVec.mult(-1);
+            newLoc.add(dirVec);
+        }
+
+        location = newLoc;
+
+        //shoot if button is pressed
+        if(shoot) {
+            this.shoot();
+            //no machine guns here
         }
     }
 
     public void draw() {
-        if(this.isAlive()) {
-            parent.stroke(0);
-            parent.strokeWeight(1);
-            parent.pushMatrix();
-            parent.translate(location.x, location.y);
+        if(!isAlive())
+            return;
 
-            parent.rectMode(PConstants.CORNER);
-            //health bar
-            float healthFactor = (255 / Constants.TANK_START_HEALTH) * this.health;
-            parent.fill(255);
-            parent.rect(-Constants.HEALTHBAR_WIDTH / 2, -(Constants.HEALTHBAR_OFFSET + Constants.HEALTHBAR_HEIGHT), Constants.HEALTHBAR_WIDTH, Constants.HEALTHBAR_HEIGHT);
-            parent.fill(255 - healthFactor, healthFactor, 0);
-            parent.rect(-Constants.HEALTHBAR_WIDTH / 2, -(Constants.HEALTHBAR_OFFSET + Constants.HEALTHBAR_HEIGHT), (Constants.HEALTHBAR_WIDTH / Constants.TANK_START_HEALTH) * this.health, Constants.HEALTHBAR_HEIGHT);
+        parent.stroke(0);
+        parent.strokeWeight(1);
+        parent.pushMatrix();
+        parent.translate(location.x, location.y);
+
+        parent.rectMode(PConstants.CORNER);
+        //health bar
+        float healthFactor = (255 / Constants.TANK_START_HEALTH) * this.health;
+        parent.fill(255);
+        parent.rect(-Constants.HEALTHBAR_WIDTH / 2, -(Constants.HEALTHBAR_OFFSET + Constants.HEALTHBAR_HEIGHT), Constants.HEALTHBAR_WIDTH, Constants.HEALTHBAR_HEIGHT);
+        parent.fill(255 - healthFactor, healthFactor, 0);
+        parent.rect(-Constants.HEALTHBAR_WIDTH / 2, -(Constants.HEALTHBAR_OFFSET + Constants.HEALTHBAR_HEIGHT), (Constants.HEALTHBAR_WIDTH / Constants.TANK_START_HEALTH) * this.health, Constants.HEALTHBAR_HEIGHT);
 
 
-            parent.rectMode(PConstants.CENTER);
-            //main body and shaft
-            parent.fill(parent.color(this.color));
-            parent.rotate(rotation);
-            //main body
-            parent.rect(0, 0, Constants.TANK_WIDTH, Constants.TANK_HEIGHT);
+        parent.rectMode(PConstants.CENTER);
+        //main body and shaft
+        parent.fill(parent.color(this.color));
+        parent.rotate(rotation);
+        //main body
+        parent.rect(0, 0, Constants.TANK_WIDTH, Constants.TANK_HEIGHT);
 
-            //cannon shaft
-            float shaftWidth = Constants.TANK_SHAFT_WIDTH;
-            float shaftHeight = Constants.TANK_SHAFT_HEIGHT;
-            parent.rect(shaftHeight / 2 + Constants.TANK_WIDTH / 2, 0, shaftHeight, shaftWidth);
+        //cannon shaft
+        float shaftWidth = Constants.TANK_SHAFT_WIDTH;
+        float shaftHeight = Constants.TANK_SHAFT_HEIGHT;
+        parent.rect(shaftHeight / 2 + Constants.TANK_WIDTH / 2, 0, shaftHeight, shaftWidth);
 
-            parent.popMatrix();
+        parent.popMatrix();
 
-            //draw bullets
-            for (Bullet bullet : bullets) {
-                bullet.draw();
-            }
+        //draw bullets
+//            for (Bullet bullet : bullets) {
+//                bullet.draw();
+//            }
+
+    }
+
+    public void shoot() {
+        if(fireDelay==0) {
+            PVector dirVec = PVector.fromAngle(this.rotation);
+            PVector startLoc = this.location.copy().add(dirVec.setMag((Constants.TANK_HEIGHT / 2) +Constants.TANK_SHAFT_HEIGHT));
+
+            Bullet bullet = new Bullet(startLoc, this.rotation);
+            bullet.setParent(parent);
+            map.addBullet(bullet);
+            fireDelay = Constants.TANK_FIRE_DELAY;
         }
+        shoot = false;
+    }
+
+    public void damage() {
+        this.health--;
+    }
+
+    public boolean isAlive() {
+        return health > 0;
     }
 }

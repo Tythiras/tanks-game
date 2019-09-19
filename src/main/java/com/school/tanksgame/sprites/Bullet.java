@@ -25,14 +25,13 @@ public class Bullet extends Sprite {
         return velocity;
     }
 
-    void update() {
+    public void update() {
         location.add(velocity);
 
         //general window borders
         if (location.x - radius < 0) {
             location.x = radius;
             velocity.x *= -1;
-
             health--;
         } else if (location.x + radius > parent.width) {
             location.x = parent.width- radius;
@@ -51,21 +50,28 @@ public class Bullet extends Sprite {
         }
     }
 
+    @Override
     public void draw() {
-        if(isAlive()) {
-            parent.fill(255 - (255 / Constants.BULLET_HEALTH) * health);
-            parent.ellipse(location.x, location.y, radius*2, radius*2);
-        }
+        if(!isAlive())
+            return;
+
+        parent.strokeWeight(1);
+        parent.fill(255 - (255 / Constants.BULLET_HEALTH) * health);
+        parent.ellipse(location.x, location.y, radius*2, radius*2);
     }
-    boolean isAlive() {
-        return health > 0 ? true : false;
+
+    @Override
+    public void damage() {
+        this.health--;
+    }
+
+    @Override
+    public boolean isAlive() {
+        return health > 0;
     }
 
     public PVector getLocation() {
         return location;
-    }
-    public void damage() {
-        this.health--;
     }
 
     public float getRadius() {

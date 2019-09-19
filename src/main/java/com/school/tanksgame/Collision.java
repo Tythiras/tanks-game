@@ -35,6 +35,16 @@ public class Collision {
         return false;
     }
 
+    public static boolean lineCircle(PVector lineStart, PVector lineEnd, PVector circle, float r) {
+
+        // get length of the line
+        float x1 = lineStart.x, y1 = lineStart.y;
+        float x2 = lineEnd.x, y2 = lineEnd.y;
+        float cx = circle.x, cy = circle.y;
+
+        return lineCircle(x1, y1, x2, y2, cx, cy, r);
+    }
+
 
     // LINE/POINT
     public static boolean linePoint(float x1, float y1, float x2, float y2, float px, float py) {
