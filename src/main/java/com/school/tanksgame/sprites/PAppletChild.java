@@ -9,5 +9,6 @@ public interface PAppletChild {
     void update();
     void draw();
     void damage();
+    void die();
     boolean isAlive();
 }

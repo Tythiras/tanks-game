@@ -17,6 +17,9 @@ public abstract class Sprite implements PAppletChild {
     public void damage() {}
 
     @Override
+    public void die() {}
+
+    @Override
     public boolean isAlive() {
         return true;
     }

@@ -88,46 +88,14 @@ public class Tank extends Sprite {
        }
     }
 
-    @Deprecated
-    public void update(ArrayList<Wall> walls, ArrayList<Tank> tanks) {
+    @Override
+    public void update() {
         //rapid fire reduce delay
         if(fireDelay>0) {
             fireDelay--;
         }
 
-        //bullet detection
-
-        for (int i = bullets.size(); i > 0; i--) {
-            Bullet bullet = bullets.get(i-1);
-            for(int i2 = tanks.size(); i2 > 0; i2--) {
-                Tank tank = tanks.get(i2-1);
-                float height = Constants.TANK_HEIGHT / 2;
-                float width = Constants.TANK_WIDTH / 2;
-                ArrayList<PVector> corners = new ArrayList<>();
-                corners.add(new PVector(width, height).rotate(tank.getRotation()).add(tank.getLocation()));
-                corners.add(new PVector(width, -height).rotate(tank.getRotation()).add(tank.getLocation()));
-                corners.add(new PVector(-width, height).rotate(tank.getRotation()).add(tank.getLocation()));
-                corners.add(new PVector(-width, -height).rotate(tank.getRotation()).add(tank.getLocation()));
-
-                for(int loop = 0; loop < corners.size(); loop++) {
-                    PVector corner1 = corners.get(loop);
-                    int loop2 = loop + 1;
-                    if(loop2>=corners.size()) {
-                        loop2 = 0;
-                    }
-                    PVector corner2 = corners.get(loop2);
-                    boolean hit = Collision.lineCircle(corner1.x, corner1.y, corner2.x, corner2.y, bullet.getLocation().x, bullet.getLocation().y, bullet.getRadius());
-                    if(hit) {
-                        bullets.remove(bullet);
-                        tank.damage();
-
-                        break;
-                    }
-
-                }
-            }
-        }
-        //update loction
+        //update location
         boolean locationUpdated = false;
         boolean block = false;
 
@@ -166,35 +134,22 @@ public class Tank extends Sprite {
 
         //check for walls thingy
         int wallsColliding = 0;
-        for(Wall wall : walls) {
-            //bullets remove
-            for (Bullet bullet : bullets) {
-                boolean hitting = Collision.lineCircle(wall.startLoc.x, wall.startLoc.y, wall.endLoc.x, wall.endLoc.y, bullet.getLocation().x, bullet.getLocation().y, bullet.getRadius() + wall.getWidth() / 2);
-                if (hitting) {
-                    PVector line = wall.getLine();
-                    PVector normal = new PVector(-line.y, line.x).setMag(1);
-                    PVector curr = bullet.getVelocity().copy();
 
-                    //reflection angle is taken from http://mathworld.wolfram.com/Reflection.html
-                    PVector newVector = curr.sub(normal.mult(2 * PVector.dot(curr, normal)));
-                    bullet.setVelocity(newVector);
-                    bullet.damage();
-                }
-            }
-
-            ArrayList<PVector> corners = new ArrayList<>();
+        for(Wall wall : map.getWalls()) { // map.getWalls(), this is actually Game Over i mean
             float height = Constants.TANK_HEIGHT / 2;
             float width = Constants.TANK_WIDTH / 2;
             //find corners
             //also midpoints on the hitbox so they can't use the line as a railway
-            corners.add(new PVector(width, height).rotate(newRotation).add(newLoc));;
-            corners.add(new PVector(width, -height).rotate(newRotation).add(newLoc));
-            corners.add(new PVector(-width, height).rotate(newRotation).add(newLoc));
-            corners.add(new PVector(-width, -height).rotate(newRotation).add(newLoc));
-            corners.add(new PVector(-width, 0).rotate(newRotation).add(newLoc));
-            corners.add(new PVector(width, 0).rotate(newRotation).add(newLoc));
-            corners.add(new PVector(0, -height).rotate(newRotation).add(newLoc));
-            corners.add(new PVector(0, height).rotate(newRotation).add(newLoc));
+            PVector[] corners = new PVector[]{
+                    new PVector(width, height).rotate(newRotation).add(newLoc),
+                    new PVector(width, -height).rotate(newRotation).add(newLoc),
+                    new PVector(-width, height).rotate(newRotation).add(newLoc),
+                    new PVector(-width, -height).rotate(newRotation).add(newLoc),
+                    new PVector(-width, 0).rotate(newRotation).add(newLoc),
+                    new PVector(width, 0).rotate(newRotation).add(newLoc),
+                    new PVector(0, -height).rotate(newRotation).add(newLoc),
+                    new PVector(0, height).rotate(newRotation).add(newLoc)
+            };
             for(PVector cornerLoc : corners) {
                 boolean hitting = Collision.lineCircle(wall.startLoc.x, wall.startLoc.y, wall.endLoc.x, wall.endLoc.y, cornerLoc.x, cornerLoc.y, wall.getWidth() / 2);
                 if (hitting) {
@@ -258,6 +213,7 @@ public class Tank extends Sprite {
                 }
             }
         }
+
         if(!block) {
             location = newLoc;
             rotation = newRotation;
@@ -266,59 +222,6 @@ public class Tank extends Sprite {
         //shoot if button is pressed
         if(shoot) {
             this.shoot();
-            //no machine guns here
-            shoot = false;
-        }
-
-
-        //update bullets
-//        for(int i = bullets.size(); i > 0; i--) {
-//            Bullet bullet = bullets.get(i-1);
-//            bullet.update();
-//            if(!bullet.isAlive()) {
-//                bullets.remove(bullet);
-//            }
-//        }
-    }
-
-    @Override
-    public void update() {
-        //rapid fire reduce delay
-        if(fireDelay>0) {
-            fireDelay--;
-        }
-
-        if (rotatingUp) {
-            rotation += Constants.TANK_ROTATIONAL_VEL;
-            if (rotation > 2*Math.PI) {
-                rotation = 0;
-            }
-        }
-        else if (rotatingDown) {
-            rotation -= Constants.TANK_ROTATIONAL_VEL;
-            if (rotation < 0) {
-                rotation = (float) (2*Math.PI);
-            }
-        }
-        //update location and make sure it isn't over the window boundaries
-        PVector newLoc = new PVector(location.x, location.y);
-        PVector dirVec = PVector.fromAngle(rotation);
-        dirVec.setMag(Constants.TANK_DRIVING_VEL);
-
-        if (drivingForwards) {
-            newLoc.add(dirVec);
-        }
-        if (drivingBackwards) {
-            dirVec.mult(-1);
-            newLoc.add(dirVec);
-        }
-
-        location = newLoc;
-
-        //shoot if button is pressed
-        if(shoot) {
-            this.shoot();
-            //no machine guns here
         }
     }
 
@@ -362,15 +265,17 @@ public class Tank extends Sprite {
     }
 
     public void shoot() {
-        if(fireDelay==0) {
-            PVector dirVec = PVector.fromAngle(this.rotation);
-            PVector startLoc = this.location.copy().add(dirVec.setMag((Constants.TANK_HEIGHT / 2) +Constants.TANK_SHAFT_HEIGHT));
+        if(fireDelay != 0)
+            return;
 
-            Bullet bullet = new Bullet(startLoc, this.rotation);
-            bullet.setParent(parent);
-            map.addBullet(bullet);
-            fireDelay = Constants.TANK_FIRE_DELAY;
-        }
+        PVector dirVec = PVector.fromAngle(this.rotation);
+        PVector startLoc = this.location.copy().add(dirVec.setMag((Constants.TANK_HEIGHT / 2) +Constants.TANK_SHAFT_HEIGHT));
+
+        Bullet bullet = new Bullet(startLoc, this.rotation);
+        bullet.setParent(parent);
+        map.addBullet(bullet);
+        fireDelay = Constants.TANK_FIRE_DELAY;
+
         shoot = false;
     }
 

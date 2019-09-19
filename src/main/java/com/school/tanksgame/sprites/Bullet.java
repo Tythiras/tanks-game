@@ -66,6 +66,11 @@ public class Bullet extends Sprite {
     }
 
     @Override
+    public void die() {
+        health = -1;
+    }
+
+    @Override
     public boolean isAlive() {
         return health > 0;
     }
