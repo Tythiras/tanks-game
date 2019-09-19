@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class ControlsFactory {
     private static ArrayList<Controls> controls;
+    private static int index = 0;
 
     static {
         controls = new ArrayList<>();
@@ -12,7 +13,7 @@ public class ControlsFactory {
     }
 
     public static Controls getControls() {
-        return controls.remove(0);
+        return controls.get(++index % controls.size());
     }
 
     private ControlsFactory() {}
