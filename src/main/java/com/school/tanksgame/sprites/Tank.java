@@ -53,6 +53,10 @@ public class Tank extends Sprite {
         return health;
     }
 
+    public float getRotation() {
+        return rotation;
+    }
+
     public void addHealth() {
        this.health++;
     }
@@ -97,44 +101,71 @@ public class Tank extends Sprite {
             Bullet bullet = bullets.get(i-1);
             for(int i2 = tanks.size(); i2 > 0; i2--) {
                 Tank tank = tanks.get(i2-1);
-                if(Collision.dist(bullet.getLocation(), tank.getLocation()) < bullet.getRadius() + Constants.TANK_HITBOX) {
-                    bullets.remove(bullet);
-                    tank.damage();
+                float height = Constants.TANK_HEIGHT / 2;
+                float width = Constants.TANK_WIDTH / 2;
+                ArrayList<PVector> corners = new ArrayList<>();
+                corners.add(new PVector(width, height).rotate(tank.getRotation()).add(tank.getLocation()));
+                corners.add(new PVector(width, -height).rotate(tank.getRotation()).add(tank.getLocation()));
+                corners.add(new PVector(-width, height).rotate(tank.getRotation()).add(tank.getLocation()));
+                corners.add(new PVector(-width, -height).rotate(tank.getRotation()).add(tank.getLocation()));
+
+                for(int loop = 0; loop < corners.size(); loop++) {
+                    PVector corner1 = corners.get(loop);
+                    int loop2 = loop + 1;
+                    if(loop2>=corners.size()) {
+                        loop2 = 0;
+                    }
+                    PVector corner2 = corners.get(loop2);
+                    boolean hit = Collision.lineCircle(corner1.x, corner1.y, corner2.x, corner2.y, bullet.getLocation().x, bullet.getLocation().y, bullet.getRadius());
+                    if(hit) {
+                        bullets.remove(bullet);
+                        tank.damage();
+
+                        break;
+                    }
+
                 }
             }
         }
+        //update loction
+        boolean locationUpdated = false;
+        boolean block = false;
 
+        float newRotation = rotation;
         //update rotation
         if (rotatingUp) {
-            rotation += Constants.TANK_ROTATIONAL_VEL;
-            if (rotation > 2*Math.PI) {
-                rotation = 0;
+            newRotation += Constants.TANK_ROTATIONAL_VEL;
+            if (newRotation > 2*Math.PI) {
+                newRotation = 0;
             }
         }
-        else if (rotatingDown) {
-            rotation -= Constants.TANK_ROTATIONAL_VEL;
-            if (rotation < 0) {
-                rotation = (float) (2*Math.PI);
+        if (rotatingDown) {
+            newRotation -= Constants.TANK_ROTATIONAL_VEL;
+            if (newRotation < 0) {
+                newRotation = (float) (2*Math.PI);
             }
         }
 
         //update location and make sure it isn't over the window boundaries
         PVector newLoc = new PVector(location.x, location.y);
-        PVector dirVec = PVector.fromAngle(rotation);
+        PVector dirVec = PVector.fromAngle(newRotation);
         dirVec.setMag(Constants.TANK_DRIVING_VEL);
 
         if (drivingForwards) {
             newLoc.add(dirVec);
+            locationUpdated = true;
         }
         if (drivingBackwards) {
             dirVec.mult(-1);
             newLoc.add(dirVec);
+            locationUpdated = true;
         }
 
         //window border code
         //!(newLoc.x < parent.width && newLoc.x > 0 && newLoc.y < parent.height && newLoc.y > 0 );
 
         //check for walls thingy
+        int wallsColliding = 0;
         for(Wall wall : walls) {
             //bullets remove
             for (Bullet bullet : bullets) {
@@ -150,59 +181,87 @@ public class Tank extends Sprite {
                     bullet.damage();
                 }
             }
-            boolean hitting = Collision.lineCircle(wall.startLoc.x, wall.startLoc.y, wall.endLoc.x, wall.endLoc.y, newLoc.x, newLoc.y, Constants.TANK_HITBOX);
-            if(hitting) {
-                PVector line = wall.getLine();
-                //if it's going inside a wall, it should just move it along the line
-                PVector blockedVelocity;
 
-                //if it's on the end of the walls detection
-                boolean onWallEdge = false;
-                //find the lowest point and highest point on the line
-                PVector lowPoint, highPoint;
-                if(wall.startLoc.y <= wall.endLoc.y) {
-                    lowPoint = wall.startLoc;
-                    highPoint = wall.endLoc;
-                } else {
-                    lowPoint = wall.endLoc;
-                    highPoint = wall.startLoc;
-                }
-                //get the perpendicular vectors of our line
-                PVector perpen = Collision.getPerpendicular(line);
-
-                //define line formulas for the highest and lowest point
-                float a = Collision.getLineA(perpen);
-                //if it's a horizontal line
-                if(a==Float.POSITIVE_INFINITY || a==Float.NEGATIVE_INFINITY) {
-                    if(location.x < lowPoint.x || location.x > highPoint.x) {
-                        onWallEdge = true;
+            ArrayList<PVector> corners = new ArrayList<>();
+            float height = Constants.TANK_HEIGHT / 2;
+            float width = Constants.TANK_WIDTH / 2;
+            //find corners
+            //also midpoints on the hitbox so they can't use the line as a railway
+            corners.add(new PVector(width, height).rotate(newRotation).add(newLoc));;
+            corners.add(new PVector(width, -height).rotate(newRotation).add(newLoc));
+            corners.add(new PVector(-width, height).rotate(newRotation).add(newLoc));
+            corners.add(new PVector(-width, -height).rotate(newRotation).add(newLoc));
+            corners.add(new PVector(-width, 0).rotate(newRotation).add(newLoc));
+            corners.add(new PVector(width, 0).rotate(newRotation).add(newLoc));
+            corners.add(new PVector(0, -height).rotate(newRotation).add(newLoc));
+            corners.add(new PVector(0, height).rotate(newRotation).add(newLoc));
+            for(PVector cornerLoc : corners) {
+                boolean hitting = Collision.lineCircle(wall.startLoc.x, wall.startLoc.y, wall.endLoc.x, wall.endLoc.y, cornerLoc.x, cornerLoc.y, wall.getWidth() / 2);
+                if (hitting) {
+                    wallsColliding++;
+                    if(wallsColliding>1) {
+                        block = true;
+                        break;
                     }
-                //else i can use linear algebra
-                } else {
-                    float b1 = lowPoint.y - a * lowPoint.x;
-                    float b2 = highPoint.y - a * highPoint.x;
+                    //if it's going inside a wall with new location
+                    if(locationUpdated) {
+                        PVector line = wall.getLine();
+                        PVector blockedVelocity;
 
-                    float yOnLine1 = a * location.x + b1;
-                    float yOnLine2 = a * location.x + b2;
-                    //check if it's below the lowest points line or above the highest points line
-                    if(yOnLine1>location.y || yOnLine2 < location.y) {
-                        onWallEdge = true;
+                        //if it's on the end of the walls detection
+                        boolean onWallEdge = false;
+                        //find the lowest point and highest point on the line
+                        PVector lowPoint, highPoint;
+                        if (wall.startLoc.y <= wall.endLoc.y) {
+                            lowPoint = wall.startLoc;
+                            highPoint = wall.endLoc;
+                        } else {
+                            lowPoint = wall.endLoc;
+                            highPoint = wall.startLoc;
+                        }
+                        //get the perpendicular vectors of our line
+                        PVector perpen = Collision.getPerpendicular(line);
+
+                        //define line formulas for the highest and lowest point
+                        float a = Collision.getLineA(perpen);
+                        //if it's a horizontal line
+                        if (a == Float.POSITIVE_INFINITY || a == Float.NEGATIVE_INFINITY) {
+                            if (location.x < lowPoint.x || location.x > highPoint.x) {
+                                onWallEdge = true;
+                            }
+                            //else i can use linear algebra
+                        } else {
+                            float b1 = lowPoint.y - a * lowPoint.x;
+                            float b2 = highPoint.y - a * highPoint.x;
+
+                            float yOnLine1 = a * location.x + b1;
+                            float yOnLine2 = a * location.x + b2;
+                            //check if it's below the lowest points line or above the highest points line
+                            if (yOnLine1 > location.y || yOnLine2 < location.y) {
+                                onWallEdge = true;
+                            }
+                        }
+
+                        if (onWallEdge) {
+                            blockedVelocity = Collision.projection(dirVec, perpen);
+                        } else {
+                            blockedVelocity = Collision.projection(dirVec, line);
+                        }
+
+                        //update location
+                        newLoc = new PVector(location.x, location.y).add(blockedVelocity);
+                        newRotation = rotation;
+                    } else {
+                        block = true;
                     }
+                    break;
                 }
-
-                if(onWallEdge) {
-                    blockedVelocity = Collision.projection(dirVec, perpen);
-                } else {
-                    blockedVelocity = Collision.projection(dirVec, line);
-                }
-
-                //update location
-                newLoc = new PVector(location.x, location.y).add(blockedVelocity);
             }
         }
-
-
-        location = newLoc;
+        if(!block) {
+            location = newLoc;
+            rotation = newRotation;
+        }
 
         //shoot if button is pressed
         if(shoot) {
