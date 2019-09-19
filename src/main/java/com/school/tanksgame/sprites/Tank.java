@@ -69,6 +69,10 @@ public class Tank extends Sprite {
         return health;
     }
 
+    public float getRotation() {
+        return rotation;
+    }
+
     public void addHealth() {
        this.health++;
     }
@@ -117,9 +121,29 @@ public class Tank extends Sprite {
             Bullet bullet = bullets.get(i-1);
             for(int i2 = tanks.size(); i2 > 0; i2--) {
                 Tank tank = tanks.get(i2-1);
-                if(Collision.dist(bullet.getLocation(), tank.getLocation()) < bullet.getRadius() + Constants.TANK_HITBOX) {
-                    bullets.remove(bullet);
-                    tank.damage();
+                float height = Constants.TANK_HEIGHT / 2;
+                float width = Constants.TANK_WIDTH / 2;
+                ArrayList<PVector> corners = new ArrayList<>();
+                corners.add(new PVector(width, height).rotate(tank.getRotation()).add(tank.getLocation()));
+                corners.add(new PVector(width, -height).rotate(tank.getRotation()).add(tank.getLocation()));
+                corners.add(new PVector(-width, height).rotate(tank.getRotation()).add(tank.getLocation()));
+                corners.add(new PVector(-width, -height).rotate(tank.getRotation()).add(tank.getLocation()));
+
+                for(int loop = 0; loop < corners.size(); loop++) {
+                    PVector corner1 = corners.get(loop);
+                    int loop2 = loop + 1;
+                    if(loop2>=corners.size()) {
+                        loop2 = 0;
+                    }
+                    PVector corner2 = corners.get(loop2);
+                    boolean hit = Collision.lineCircle(corner1.x, corner1.y, corner2.x, corner2.y, bullet.getLocation().x, bullet.getLocation().y, bullet.getRadius());
+                    if(hit) {
+                        bullets.remove(bullet);
+                        tank.damage();
+
+                        break;
+                    }
+
                 }
             }
         }
