@@ -132,10 +132,13 @@ public class Tank extends Sprite {
         //window border code
         //!(newLoc.x < parent.width && newLoc.x > 0 && newLoc.y < parent.height && newLoc.y > 0 );
 
+        if(newLoc.x < 0 || newLoc.x > parent.width || newLoc.y < 0 || newLoc.y > parent.height) {
+            newLoc = location;
+        }
+
         //check for walls thingy
         int wallsColliding = 0;
-
-        for(Wall wall : map.getWalls()) { // map.getWalls(), this is actually Game Over i mean
+        for (Wall wall : map.getWalls()) { // map.getWalls(), this is actually Game Over i mean
             float height = Constants.TANK_HEIGHT / 2;
             float width = Constants.TANK_WIDTH / 2;
             //find corners
@@ -150,16 +153,16 @@ public class Tank extends Sprite {
                     new PVector(0, -height).rotate(newRotation).add(newLoc),
                     new PVector(0, height).rotate(newRotation).add(newLoc)
             };
-            for(PVector cornerLoc : corners) {
-                boolean hitting = Collision.lineCircle(wall.startLoc.x, wall.startLoc.y, wall.endLoc.x, wall.endLoc.y, cornerLoc.x, cornerLoc.y, wall.getWidth() / 2);
+            for (PVector cornerLoc : corners) {
+                boolean hitting = Collision.lineCircle(wall.getStartLoc(), wall.getEndLoc(), cornerLoc, wall.getWidth() / 2);
                 if (hitting) {
                     wallsColliding++;
-                    if(wallsColliding>1) {
+                    if (wallsColliding > 1) {
                         block = true;
                         break;
                     }
                     //if it's going inside a wall with new location
-                    if(locationUpdated) {
+                    if (locationUpdated) {
                         PVector line = wall.getLine();
                         PVector blockedVelocity;
 
