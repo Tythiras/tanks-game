@@ -31,7 +31,6 @@ public class Wall extends Sprite {
         return width;
     }
 
-
     public void draw() {
         parent.strokeWeight(width);
         parent.strokeCap(PConstants.SQUARE);

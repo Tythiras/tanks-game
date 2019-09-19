@@ -2,16 +2,15 @@ package com.school.tanksgame.sprites;
 
 import com.school.tanksgame.Collision;
 import com.school.tanksgame.Constants;
-import com.school.tanksgame.Controls;
+import com.school.tanksgame.controls.Controls;
 import processing.core.PConstants;
 import processing.core.PVector;
 import processing.event.KeyEvent;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 public class Tank extends Sprite {
-    Map<Integer, Controls> controls;
+    Controls controls;
     ArrayList<Bullet> bullets;
 
     private PVector location;
@@ -29,7 +28,7 @@ public class Tank extends Sprite {
     private boolean drivingForwards;
     private boolean drivingBackwards;
 
-    public Tank(PVector location, Map<Integer, Controls> controls, int color) {
+    public Tank(PVector location, Controls controls, int color) {
         this.controls = controls;
         this.location = location;
 
@@ -61,6 +60,7 @@ public class Tank extends Sprite {
             fireDelay = Constants.TANK_FIRE_DELAY;
         }
     }
+
     public void damage() {
         this.health--;
     }
@@ -70,19 +70,15 @@ public class Tank extends Sprite {
     }
 
     public void addHealth() {
-        this.health += 1;
+       this.health++;
     }
 
-    boolean isAlive() {
-        return health > 0 ? true : false;
-    }
-
-
-    public void detectCollision(Wall wall) {
+    public boolean isAlive() {
+        return health > 0;
     }
 
     public void keyAction(KeyEvent event) {
-       Controls control = controls.get(event.getKeyCode());
+       Controls.ControlType control = controls.get(event.getKeyCode());
        int keyAction = event.getAction();
 
        if (control == null)
@@ -124,9 +120,6 @@ public class Tank extends Sprite {
                 if(Collision.dist(bullet.getLocation(), tank.getLocation()) < bullet.getRadius() + Constants.TANK_HITBOX) {
                     bullets.remove(bullet);
                     tank.damage();
-                    if(!tank.isAlive()) {
-                        tanks.remove(tank);
-                    }
                 }
             }
         }

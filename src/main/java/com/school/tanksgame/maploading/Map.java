@@ -2,6 +2,7 @@ package com.school.tanksgame.maploading;
 
 import com.school.tanksgame.sprites.HealthPad;
 import com.school.tanksgame.sprites.Sprite;
+import com.school.tanksgame.sprites.Tank;
 import com.school.tanksgame.sprites.Wall;
 import processing.core.PApplet;
 
@@ -11,12 +12,19 @@ public class Map extends Sprite {
     private String name;
     private ArrayList<Wall> walls;
     private ArrayList<HealthPad> healthPads;
+    private ArrayList<Tank> tanks;
+    private ArrayList<Sprite> sprites;
 
-
-    public Map(String name) {
+    public Map(String name, ArrayList<Wall> walls, ArrayList<HealthPad> healthPads, ArrayList<Tank> tanks) {
         this.name = name;
-        this.walls = new ArrayList<>();
-        this.healthPads = new ArrayList<>();
+        this.walls = walls;
+        this.healthPads = healthPads;
+        this.tanks = tanks;
+
+        sprites = new ArrayList<>();
+        sprites.addAll(walls);
+        sprites.addAll(healthPads);
+        sprites.addAll(tanks);
     }
 
     @Override
@@ -26,16 +34,8 @@ public class Map extends Sprite {
     }
 
     private void setParentForSprites() {
-        for (Wall wall : walls) {
-            wall.setParent(parent);
-        }
-        for (HealthPad healthPad : healthPads) {
-            healthPad.setParent(parent);
-        }
-    }
-
-    public void setWalls(ArrayList<Wall> walls) {
-        this.walls = walls;
+        for (Sprite sprite : sprites)
+            sprite.setParent(parent);
     }
 
     public ArrayList<Wall> getWalls() {
@@ -45,25 +45,28 @@ public class Map extends Sprite {
         return healthPads;
     }
 
-    public void setHealthPads(ArrayList<HealthPad> healthPads) {
-        this.healthPads = healthPads;
-    }
-
-    void addWall(Wall wall) {
-        this.walls.add(wall);
-    }
-
-    void addHealthPad(HealthPad healthPad) {
-        this.healthPads.add(healthPad);
-    }
+//    public void setWalls(ArrayList<Wall> walls) {
+//        this.walls = walls;
+//    }
+//
+//    public void setHealthPads(ArrayList<HealthPad> healthPads) {
+//        this.healthPads = healthPads;
+//    }
+//
+//    public void setTanks(ArrayList<Tank> tanks) {
+//        this.tanks = tanks;
+//    }
+//
+//    void addWall(Wall wall) {
+//        this.walls.add(wall);
+//    }
+//
+//    void addHealthPad(HealthPad healthPad) {
+//        this.healthPads.add(healthPad);
+//    }
 
     public void draw() {
-        for (Wall wall : walls) {
-            wall.draw();
-        }
-
-        for (HealthPad healthPad : healthPads) {
-            healthPad.draw();
-        }
+        for (Sprite sprite: sprites)
+            sprite.draw();
     }
  }

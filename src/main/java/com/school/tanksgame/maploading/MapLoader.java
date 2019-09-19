@@ -1,6 +1,9 @@
 package com.school.tanksgame.maploading;
 
+import com.school.tanksgame.controls.Controls;
+import com.school.tanksgame.controls.ControlsFactory;
 import com.school.tanksgame.sprites.HealthPad;
+import com.school.tanksgame.sprites.Tank;
 import com.school.tanksgame.sprites.Wall;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -11,6 +14,7 @@ import processing.core.PVector;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class MapLoader {
@@ -31,12 +35,10 @@ public class MapLoader {
             for (JSONObject jsonObject : (Iterable<JSONObject>) jsonArray) {
                 ArrayList<Wall> walls = getWallsFromArray((JSONArray) jsonObject.get("walls"));
                 ArrayList<HealthPad> healthPads = getHealthPadsFromArray((JSONArray) jsonObject.get("health_pads"));
-
+                ArrayList<Tank> tanks = getTanksFromArray((JSONArray) jsonObject.get("tanks"));
                 String name = (String) jsonObject.get("name");
 
-                Map map = new Map(name);
-                map.setWalls(walls);
-                map.setHealthPads(healthPads);
+                Map map = new Map(name, walls, healthPads, tanks);
                 map.setParent(parent);
 
                 maps.add(map);
@@ -85,6 +87,25 @@ public class MapLoader {
             healthPads.add(healthPad);
         }
         return healthPads;
+    }
+
+    private ArrayList<Tank> getTanksFromArray(JSONArray tanksArray) {
+        ArrayList<Tank> tanks = new ArrayList<>();
+        for (JSONObject tankObj : (Iterable<JSONObject>) tanksArray) {
+            JSONArray locationArray = (JSONArray) tankObj.get("coords");
+            String colorString = (String) tankObj.get("color");
+
+            PVector location = new PVector(
+                    Float.valueOf((Long) locationArray.get(0)),
+                    Float.valueOf((Long) locationArray.get(1))
+            );
+            int color = (int) Long.parseLong(colorString, 16);
+            Controls controls = ControlsFactory.getControls();
+
+            Tank tank = new Tank(location, controls, color);
+            tanks.add(tank);
+        }
+        return tanks;
     }
 
     public Map getMap(int index) {
