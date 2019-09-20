@@ -54,6 +54,10 @@ public class Map {
         sprites.add(0, bullet);
     }
 
+    public String getName() {
+        return name;
+    }
+
     public ArrayList<Wall> getWalls() {
         // YIKES
         // Blame Rasmus for this atrocity
@@ -168,4 +172,5 @@ public class Map {
         for (Tank tank : tanks)
             tank.keyAction(event);
     }
+
  }

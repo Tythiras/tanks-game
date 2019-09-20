@@ -211,7 +211,7 @@ public class Tank extends Sprite {
 
                         //update location
                         newLoc = new PVector(location.x, location.y).add(blockedVelocity);
-                        newRotation = rotation;
+                        //newRotation = rotation;
                     } else {
                         block = true;
                     }
