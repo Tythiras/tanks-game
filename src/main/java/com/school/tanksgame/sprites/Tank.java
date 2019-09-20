@@ -58,7 +58,7 @@ public class Tank extends Sprite {
     }
 
     public void addHealth() {
-       this.health++;
+       this.health +=Constants.HEALTHPAD_HEALTH;
     }
 
     public void keyAction(KeyEvent event) {
@@ -211,7 +211,6 @@ public class Tank extends Sprite {
 
                         //update location
                         newLoc = new PVector(location.x, location.y).add(blockedVelocity);
-                        newRotation = rotation;
                     } else {
                         block = true;
                     }
