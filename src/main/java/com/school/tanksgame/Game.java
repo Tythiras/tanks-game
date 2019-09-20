@@ -1,5 +1,6 @@
 package com.school.tanksgame;
 
+import com.school.tanksgame.controls.Player;
 import com.school.tanksgame.maploading.Map;
 import com.school.tanksgame.maploading.MapLoader;
 import processing.core.PApplet;
@@ -7,51 +8,33 @@ import processing.event.KeyEvent;
 
 public class Game extends PApplet {
 
-    private int titleTime = 0;
     private MapLoader mapLoader;
     private Map map;
-    private TitleController titles;
-
-    void gameOver() {
-
-    }
-
-    void startGame() {
-
-    }
-
-    void loadMap() {
-
-    }
+    private TitleController titleController;
 
     @Override
     public void settings() {
         size(Constants.WIDTH, Constants.HEIGHT);
     }
 
-    public void initializeMap(int index) {
-        map = mapLoader.getMap(index);
-        titles.addTitle("Loading map: "+map.getName(), 200);
-    }
     @Override
     public void setup() {
-        titles = new TitleController(this);
+        titleController = new TitleController(this);
         mapLoader = new MapLoader("maps.json", this);
-        mapLoader.load();
-        initializeMap(0);
+        loadNextMap();
     }
 
     @Override
     public void draw() {
         clear();
         background(255);
-        if(titles.isActive()) {
-            titles.draw();
-            titles.update();
-        } else {
-            map.update();
-            map.draw();
+
+        if(titleController.isActive()) {
+            titleController.draw();
+            return;
         }
+
+        map.draw();
     }
 
     @Override
@@ -62,6 +45,20 @@ public class Game extends PApplet {
     @Override
     public void keyReleased(KeyEvent event) {
         map.keyAction(event);
+    }
+
+    public void gameOver(String message) {
+        titleController.addTitle(message);
+        loadNextMap();
+    }
+
+    private void loadNextMap() {
+        map = mapLoader.nextMap();
+        if (map == null) {
+            mapLoader.loadMaps();
+            loadNextMap();
+        }
+        titleController.addTitle("Loading map: "+map.getName());
     }
 
     public static void main(String[] args) {

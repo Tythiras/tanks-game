@@ -1,7 +1,7 @@
 package com.school.tanksgame.maploading;
 
-import com.school.tanksgame.controls.Controls;
-import com.school.tanksgame.controls.ControlsFactory;
+import com.school.tanksgame.controls.Player;
+import com.school.tanksgame.controls.PlayerFactory;
 import com.school.tanksgame.sprites.HealthPad;
 import com.school.tanksgame.sprites.Tank;
 import com.school.tanksgame.sprites.Wall;
@@ -19,16 +19,22 @@ import java.util.ArrayList;
 public class MapLoader {
     private String loadFilePath;
     private ArrayList<Map> maps;
+    private Player[] players;
     private PApplet parent;
+    private int mapsIndex;
 
-    public MapLoader(String loadFilePath, PApplet parent) {
+    public MapLoader(String loadFilePath, PApplet parent, Player... players) {
         this.loadFilePath = loadFilePath;
         this.parent = parent;
         this.maps = new ArrayList<>();
+        this.players = players;
     }
 
-    public void load() {
+    public void loadMaps() {
         JSONParser parser = new JSONParser();
+        maps.clear();
+        mapsIndex = 0;
+
         try {
             JSONArray jsonArray = (JSONArray) parser.parse(new FileReader(loadFilePath));
             for (JSONObject jsonObject : (Iterable<JSONObject>) jsonArray) {
@@ -99,15 +105,19 @@ public class MapLoader {
                     Float.valueOf((Long) locationArray.get(1))
             );
             int color = (int) Long.parseLong(colorString, 16);
-            Controls controls = ControlsFactory.getControls();
+            Player player = PlayerFactory.getPlayer();
 
-            Tank tank = new Tank(location, controls, color);
+            Tank tank = new Tank(location, player, color);
             tanks.add(tank);
         }
         return tanks;
     }
 
     public Map getMap(int index) {
-        return maps.get(index);
+        return index >= maps.size() ? null : maps.get(index);
+    }
+
+    public Map nextMap() {
+        return getMap(mapsIndex++);
     }
 }

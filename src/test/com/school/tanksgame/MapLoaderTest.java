@@ -3,14 +3,12 @@ package com.school.tanksgame;
 import com.school.tanksgame.maploading.MapLoader;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.*;
-
 class MapLoaderTest {
 
     @Test
     void load() {
         MapLoader mapLoader = new MapLoader("maps.json", null);
-        mapLoader.load();
+        mapLoader.loadMaps();
     }
 
     @Test

@@ -10,9 +10,8 @@ public class Constants {
     public static final float TANK_HEIGHT = 30;
     public static final float TANK_SHAFT_HEIGHT = 20;
     public static final float TANK_SHAFT_WIDTH = 5;
-    public static final float TANK_START_HEALTH = 10;
+    public static final float TANK_START_HEALTH = 5;
     public static final int TANK_FIRE_DELAY = 10;
-
 
     public static final float WALL_WIDTH = 5;
 
@@ -22,10 +21,11 @@ public class Constants {
     public static final float HEALTHPAD_RADIUS = 15;
     public static final float HEALTHPAD_HEALTH = 3;
 
-
     public static final int BULLET_HEALTH = 5;
     public static final int BULLET_RADIUS = 5;
 
+    public static final int TITLE_DELAY = 50;
+    public static final int GAMEOVER_DELAY = 50;
 
     private Constants() {}
 }

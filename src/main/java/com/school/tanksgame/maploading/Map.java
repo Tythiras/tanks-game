@@ -2,8 +2,11 @@ package com.school.tanksgame.maploading;
 
 import com.school.tanksgame.Collision;
 import com.school.tanksgame.Constants;
+import com.school.tanksgame.Game;
+import com.school.tanksgame.controls.Player;
 import com.school.tanksgame.sprites.*;
 import processing.core.PApplet;
+import processing.core.PConstants;
 import processing.core.PVector;
 import processing.event.KeyEvent;
 
@@ -17,12 +20,14 @@ public class Map {
     private ArrayList<Tank> tanks;
     private ArrayList<Bullet> bullets;
     private ArrayList<Sprite> sprites;
+    private int gameOverDelay;
 
     public Map(String name, ArrayList<Wall> walls, ArrayList<HealthPad> healthPads, ArrayList<Tank> tanks) {
         this.name = name;
         this.walls = walls;
         this.healthPads = healthPads;
         this.tanks = tanks;
+        this.gameOverDelay = Constants.GAMEOVER_DELAY;
         this.bullets = new ArrayList<>();
 
         sprites = new ArrayList<>();
@@ -153,9 +158,27 @@ public class Map {
             sprites.remove(tank);
             tanks.remove(tank);
         }
+
+        checkWinners();
     }
 
-    public void update() {
+    private void checkWinners() {
+        if (tanks.size() <= 1 && gameOverDelay > 0) {
+            gameOverDelay--;
+            return;
+        }
+
+        if (tanks.size() == 1) {
+            Player winner = tanks.get(0).getPlayer();
+            winner.scoreAdd();
+            ((Game)parent).gameOver("Game over, "+winner.getName()+" has won!");
+        }
+        else if (tanks.size() == 0) {
+            ((Game)parent).gameOver("Game over, no winners this time :(");
+        }
+    }
+
+    private void update() {
         for (int i=sprites.size(); i>0; i--)
             sprites.get(i-1).update();
         detectBulletCollision();
@@ -163,9 +186,27 @@ public class Map {
         detectDeadTanks();
     }
 
+    private void drawScoreboard() {
+        parent.fill(0);
+        parent.textAlign(PConstants.CORNER);
+        parent.textSize(20);
+        parent.text("Scoreboard", 25, 25);
+
+
+        int y = 30;
+        for (Tank tank : tanks) {
+            Player player = tank.getPlayer();
+            parent.fill(tank.getColor());
+            String score = player.getName() + ": " + player.getScore();
+            parent.text(score, 30, y+=20);
+        }
+    }
+
     public void draw() {
+        update();
         for (int i=sprites.size(); i>0; i--)
             sprites.get(i-1).draw();
+        drawScoreboard();
     }
 
     public void keyAction(KeyEvent event) {

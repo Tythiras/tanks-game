@@ -2,41 +2,38 @@ package com.school.tanksgame.sprites;
 
 import com.school.tanksgame.Collision;
 import com.school.tanksgame.Constants;
+import com.school.tanksgame.controls.Player;
 import com.school.tanksgame.controls.Controls;
 import processing.core.PConstants;
 import processing.core.PVector;
 import processing.event.KeyEvent;
 
-import java.util.ArrayList;
-
 public class Tank extends Sprite {
-    Controls controls;
-    ArrayList<Bullet> bullets;
+    private final Player player;
+    private final Controls controls;
 
     private PVector location;
     private float rotation;
-
     private int color;
-    private float health = Constants.TANK_START_HEALTH;
-
+    private float health;
     private boolean shoot;
-
-    private int fireDelay = 0;
+    private int fireDelay;
 
     private boolean rotatingUp;
     private boolean rotatingDown;
     private boolean drivingForwards;
     private boolean drivingBackwards;
 
-    public Tank(PVector location, Controls controls, int color) {
-        this.controls = controls;
+    public Tank(PVector location, Player player, int color) {
         this.location = location;
+        this.color = color;
+        this.player = player;
+        this.controls = player.getControls();
 
         this.rotation = 0;
-
-        this.color = color;
-
-        this.bullets = new ArrayList<>();
+        this.health = Constants.TANK_START_HEALTH;
+        this.shoot = false;
+        this.fireDelay = 0;
 
         this.rotatingUp = false;
         this.rotatingDown = false;
@@ -57,8 +54,16 @@ public class Tank extends Sprite {
         return rotation;
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
     public void addHealth() {
-       this.health +=Constants.HEALTHPAD_HEALTH;
+       health = Math.min(health+Constants.HEALTHPAD_HEALTH, Constants.TANK_START_HEALTH);
     }
 
     public void keyAction(KeyEvent event) {
