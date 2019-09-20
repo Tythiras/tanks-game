@@ -5,6 +5,28 @@ import processing.core.PVector;
 public class Collision {
     // lineCircle AND linePoint is taken from http://www.jeffreythompson.org/collision-detection/line-circle.php
     // LINE/CIRCLE
+
+    //http://www.cs.swan.ac.uk/~cssimon/line_intersection.html
+    public static boolean linesIntersect(PVector loc1, PVector loc2, PVector loc3, PVector loc4) {
+        float topA = (loc3.y - loc4.y) * (loc1.x - loc3.x) + (loc4.x - loc3.x) * (loc1.y - loc3.y);
+        float bottomA = (loc4.x - loc3.x) * (loc1.y - loc2.y) - (loc1.x - loc2.x) * (loc4.y - loc3.y);
+        float ta = topA / bottomA;
+
+        float topB = (loc1.y - loc2.y) * (loc1.x - loc3.x) + (loc2.x - loc1.x) * (loc1.y - loc3.y);
+        float bottomB =  (loc4.x - loc3.x) * (loc1.y - loc2.y) - (loc1.x - loc2.x) * (loc4.y - loc3.y);
+        float tb = topB / bottomB;
+
+        System.out.println(ta);
+        System.out.println(tb);
+        if(ta >= 0 && ta <= 1 && tb >= 0 && tb <= 1) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+
     public static boolean lineCircle(float x1, float y1, float x2, float y2, float cx, float cy, float r) {
 
         // get length of the line

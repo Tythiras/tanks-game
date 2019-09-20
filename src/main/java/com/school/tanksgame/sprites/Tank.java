@@ -139,22 +139,25 @@ public class Tank extends Sprite {
         //check for walls thingy
         int wallsColliding = 0;
         for (Wall wall : map.getWalls()) { // map.getWalls(), this is actually Game Over i mean
-            float height = Constants.TANK_HEIGHT / 2;
-            float width = Constants.TANK_WIDTH / 2;
+            float height = Constants.TANK_HEIGHT / 2 + wall.getWidth() / 2;
+            float width = Constants.TANK_WIDTH / 2 + wall.getWidth() / 2;
             //find corners
-            //also midpoints on the hitbox so they can't use the line as a railway
-            PVector[] corners = new PVector[]{
+
+            PVector[] corners = new PVector[] {
                     new PVector(width, height).rotate(newRotation).add(newLoc),
                     new PVector(width, -height).rotate(newRotation).add(newLoc),
                     new PVector(-width, height).rotate(newRotation).add(newLoc),
-                    new PVector(-width, -height).rotate(newRotation).add(newLoc),
-                    new PVector(-width, 0).rotate(newRotation).add(newLoc),
-                    new PVector(width, 0).rotate(newRotation).add(newLoc),
-                    new PVector(0, -height).rotate(newRotation).add(newLoc),
-                    new PVector(0, height).rotate(newRotation).add(newLoc)
+                    new PVector(-width, -height).rotate(newRotation).add(newLoc)
             };
-            for (PVector cornerLoc : corners) {
-                boolean hitting = Collision.lineCircle(wall.getStartLoc(), wall.getEndLoc(), cornerLoc, wall.getWidth() / 2);
+
+            for(int k = 0; k < corners.length; k++) {
+                int nextIndex = k + 1;
+                nextIndex = nextIndex >= corners.length ? 0 : nextIndex;
+
+                PVector corner1 = corners[k];
+                PVector corner2 = corners[nextIndex];
+
+                boolean hitting = Collision.linesIntersect(corner1, corner2, wall.getStartLoc(), wall.getEndLoc());
                 if (hitting) {
                     wallsColliding++;
                     if (wallsColliding > 1) {
