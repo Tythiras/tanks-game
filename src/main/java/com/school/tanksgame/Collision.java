@@ -16,8 +16,6 @@ public class Collision {
         float bottomB =  (loc4.x - loc3.x) * (loc1.y - loc2.y) - (loc1.x - loc2.x) * (loc4.y - loc3.y);
         float tb = topB / bottomB;
 
-        System.out.println(ta);
-        System.out.println(tb);
         if(ta >= 0 && ta <= 1 && tb >= 0 && tb <= 1) {
             return true;
         } else {
