@@ -7,8 +7,10 @@ import processing.event.KeyEvent;
 
 public class Game extends PApplet {
 
+    private int titleTime = 0;
     private MapLoader mapLoader;
     private Map map;
+    private TitleController titles;
 
     void gameOver() {
 
@@ -27,19 +29,29 @@ public class Game extends PApplet {
         size(Constants.WIDTH, Constants.HEIGHT);
     }
 
+    public void initializeMap(int index) {
+        map = mapLoader.getMap(index);
+        titles.addTitle("Loading map: "+map.getName(), 200);
+    }
     @Override
     public void setup() {
+        titles = new TitleController(this);
         mapLoader = new MapLoader("maps.json", this);
         mapLoader.load();
-        map = mapLoader.getMap(0);
+        initializeMap(0);
     }
 
     @Override
     public void draw() {
         clear();
         background(255);
-        map.update();
-        map.draw();
+        if(titles.isActive()) {
+            titles.draw();
+            titles.update();
+        } else {
+            map.update();
+            map.draw();
+        }
     }
 
     @Override
