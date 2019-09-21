@@ -1,4 +1,4 @@
-package com.school.tanksgame.controls;
+package com.school.tanksgame.player;
 
 import java.util.HashMap;
 

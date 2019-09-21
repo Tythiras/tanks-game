@@ -1,7 +1,7 @@
 package com.school.tanksgame.maploading;
 
-import com.school.tanksgame.controls.Player;
-import com.school.tanksgame.controls.PlayerFactory;
+import com.school.tanksgame.player.Player;
+import com.school.tanksgame.player.PlayerFactory;
 import com.school.tanksgame.sprites.HealthPad;
 import com.school.tanksgame.sprites.Tank;
 import com.school.tanksgame.sprites.Wall;
@@ -19,15 +19,13 @@ import java.util.ArrayList;
 public class MapLoader {
     private String loadFilePath;
     private ArrayList<Map> maps;
-    private Player[] players;
     private PApplet parent;
     private int mapsIndex;
 
-    public MapLoader(String loadFilePath, PApplet parent, Player... players) {
+    public MapLoader(String loadFilePath, PApplet parent) {
         this.loadFilePath = loadFilePath;
         this.parent = parent;
         this.maps = new ArrayList<>();
-        this.players = players;
     }
 
     public void loadMaps() {

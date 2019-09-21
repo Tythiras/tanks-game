@@ -3,7 +3,7 @@ package com.school.tanksgame.maploading;
 import com.school.tanksgame.Collision;
 import com.school.tanksgame.Constants;
 import com.school.tanksgame.Game;
-import com.school.tanksgame.controls.Player;
+import com.school.tanksgame.player.Player;
 import com.school.tanksgame.sprites.*;
 import processing.core.PApplet;
 import processing.core.PConstants;

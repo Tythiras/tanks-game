@@ -2,8 +2,8 @@ package com.school.tanksgame.sprites;
 
 import com.school.tanksgame.Collision;
 import com.school.tanksgame.Constants;
-import com.school.tanksgame.controls.Player;
-import com.school.tanksgame.controls.Controls;
+import com.school.tanksgame.player.Player;
+import com.school.tanksgame.player.Controls;
 import processing.core.PConstants;
 import processing.core.PVector;
 import processing.event.KeyEvent;

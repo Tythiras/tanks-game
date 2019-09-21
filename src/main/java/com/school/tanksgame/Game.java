@@ -1,6 +1,5 @@
 package com.school.tanksgame;
 
-import com.school.tanksgame.controls.Player;
 import com.school.tanksgame.maploading.Map;
 import com.school.tanksgame.maploading.MapLoader;
 import processing.core.PApplet;
