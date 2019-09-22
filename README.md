@@ -1,3 +1,12 @@
-# tanks-school
-Description:
-Tank spil - 2 spillere, hver har en tank de kan flytte rundt på banen. De kan skyde kud efter hinanden som hvis de bliver ramt af vil dræbe dem hvorefter de vil miste et point. Og skyderen vil få 1 point
+# tanks-game
+A simple 2 player tank game where you shoot after each other and attempt to win by killing your opponent.  
+
+### Controls:
+1. Player Bob:
+   * wasd to move
+   * space to shoot
+2. Player Alice
+   * arrows to move
+   * enter to shoot
+
+   
