@@ -56,6 +56,7 @@ public class Game extends PApplet {
         if (map == null) {
             mapLoader.loadMaps();
             loadNextMap();
+            return;
         }
         titleController.addTitle("Loading map: "+map.getName());
     }
